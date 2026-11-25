@@ -23,7 +23,7 @@ BUILD_VERSION = "2"
 @dataclass(frozen=True)
 class IndexProfile:
     name: str
-    chunker: Literal["hand_recursive", "lc"]
+    chunker: Literal["hand_recursive", "lc", "fixed"]
     chunk_size: int
     overlap: int
     context_prefix: bool
@@ -81,6 +81,11 @@ def build_chunks(profile: str | IndexProfile) -> list[Document]:
     if p.chunker == "hand_recursive":
         chunks = _hand_chunks(loaders.load_corpus(include), p.chunk_size, p.overlap)
         chunks = chunking.enrich_metadata(chunks)
+    elif p.chunker == "fixed":  # added in notebook 08: blind fixed-size cuts, no structure
+        docs = loaders.load_corpus_lc(include)
+        for d in docs:
+            d.metadata.pop("raw_html", None)
+        chunks = chunking.enrich_metadata(chunking.chunk_fixed(docs, p.chunk_size, p.overlap))
     else:
         chunks = chunking.chunk_corpus_lc(  # added in notebook 04
             loaders.load_corpus_lc(include), size=p.chunk_size, overlap=p.overlap, context_prefix=False
@@ -147,3 +152,22 @@ def ensure_index(profile: str = "nb04_baseline"):
     store = store_chroma.create_lc_store(build_chunks(p), p.name, collection_metadata={"fingerprint": fingerprint})
     print(f"[{p.name}] {store._collection.count()} chunks indexed")
     return store
+
+
+# ── tuning profiles (added in notebook 08) ───────────────────────────────────
+
+# A deliberately broken index for notebook 08's diagnosis exercise: blind 2,500-character cuts,
+# no overlap, no context prefix, and one policy file missing (a "stale" index).
+PROFILES["nb08_broken"] = IndexProfile(
+    "nb08_broken", "fixed", 2500, 0, False, exclude_files=("cancellation_policy_2025.md",)
+)
+# The same bad chunking with every file indexed (step 1 of notebook 08's fixes).
+PROFILES["nb08_broken_all_files"] = IndexProfile("nb08_broken_all_files", "fixed", 2500, 0, False)
+
+
+def make_profile(chunk_size: int, overlap: int, context_prefix: bool = True) -> str:
+    """Register a LangChain-chunked profile for a tuning grid and return its name,
+    e.g. make_profile(400, 100) -> "grid_cs400_ov100_p1"."""
+    name = f"grid_cs{chunk_size}_ov{overlap}_p{int(context_prefix)}"
+    PROFILES.setdefault(name, IndexProfile(name, "lc", chunk_size, overlap, context_prefix))
+    return name

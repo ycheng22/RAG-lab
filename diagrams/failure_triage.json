@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "diagram_type": "tree",
+  "meta": {
+    "title": "Why did this answer go wrong?",
+    "subtitle": "Triage one failed question at a time. Each branch names the check, each leaf the usual fix.",
+    "output": "diagrams/failure_triage.html",
+    "quality_profile": "showcase",
+    "locale": "en"
+  },
+  "nodes": [
+    { "id": "root", "label": "A wrong answer", "sublabel": "start with one failed question" },
+    { "id": "unans", "label": "Should it have refused?", "parent": "root", "sublabel": "the answer is not in the documents" },
+    { "id": "refusal", "label": "Yes, but it answered: refusal failure", "parent": "unans", "sublabel": "fix the prompt: allow only the context, give an exact refusal sentence" },
+    { "id": "answerable", "label": "No: was the evidence retrieved?", "parent": "root", "sublabel": "check the retrieved chunks, not the answer" },
+    { "id": "retrieval", "label": "Not retrieved: retrieval failure", "parent": "answerable", "sublabel": "is the file indexed? chunk size, k, hybrid search, metadata" },
+    { "id": "generation", "label": "Retrieved, still wrong: generation failure", "parent": "answerable", "sublabel": "prompt rules, conflicting versions, model choice" }
+  ]
+}
