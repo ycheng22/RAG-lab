@@ -315,7 +315,9 @@ def build_graph():
         return {"answer": answer, "steps": step(state, "generate", {}, answer)}
 
     def self_check(state):
-        if NOT_FOUND.lower() in state["answer"].lower():
+        from raglab.evaluation import is_not_found
+
+        if is_not_found(state["answer"]):
             return {"steps": step(state, "self_check", {}, "refusal: nothing to check")}
         verdict = llm.chat(CHECK_PROMPT.format(context=_context_text(state), answer=state["answer"]))
         if verdict.strip().lower().startswith("yes"):

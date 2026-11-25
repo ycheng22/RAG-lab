@@ -1,0 +1,29 @@
+{
+  "grid": {
+    "chunk_size": [
+      400,
+      800,
+      1200
+    ],
+    "overlap": [
+      150
+    ],
+    "k": [
+      2,
+      4,
+      8
+    ],
+    "retriever": [
+      "similarity",
+      "hybrid"
+    ],
+    "prompt": [
+      "basic",
+      "grounded"
+    ]
+  },
+  "n_items": 36,
+  "cost_usd": 0.09041,
+  "date": "2026-11-25",
+  "chat_model": "gpt-6-luna"
+}

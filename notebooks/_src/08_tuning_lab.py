@@ -106,6 +106,14 @@ grid[cols].sort_values("hit_rate", ascending=False).head(12)
 # table doing its job: the cheapest way to more recall here is a better retriever, not more chunks.
 # (Latency is tiny because question embeddings are cached after the first run.)
 #
+# The full run adds answer accuracy for every combination (36 of them, 35 questions each). There,
+# more recall **did** turn into better answers: accuracy rises with k (55% at k = 2, 72% at k = 8 on
+# average), hybrid beats similarity (67% vs 61%), and the grounded prompt beats the basic one in
+# every single row (69% vs 58% on average). The best setting, 1,200-character chunks with hybrid
+# search, k = 8 and the grounded prompt, answers 86% correctly, at about 900 context tokens per
+# question. On this small corpus that's still a fraction of a cent; on a large one, check whether
+# k = 4 (74% at 800 characters, half the tokens) is good enough.
+#
 # ## 4. Checklist: reviewing someone else's RAG system
 #
 # When you inherit a RAG system, walk through it in this order. Each check names the raglab tool
@@ -273,9 +281,9 @@ summary
 # - **k = 4** is the biggest jump: retrieval failures roughly halve, because comparative and
 #   multi-hop questions finally get both of their facts.
 # - **The grounded prompt** turns every unanswerable question into the exact refusal sentence.
-#   The **generation failures** that remain are mostly the opposite problem: with the evidence in
-#   hand, the strict prompt sometimes refuses anyway, especially on multi-hop questions where the
-#   facts sit in different chunks. Being too cautious is the safer failure, but it is still a failure
+#   The **generation failures** that remain are mostly the opposite problem: in the run saved here,
+#   three of the four are the refusal sentence given with the evidence in hand, two of them on
+#   multi-hop questions where the facts sit in different chunks. Being too cautious is the safer failure, but it is still a failure
 #   (notebook 10 works on answer quality).
 #
 # The remaining failures are the ones notebooks 06 and 07 worked on: comparisons across all hotels

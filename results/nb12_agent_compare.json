@@ -1,0 +1,11 @@
+{
+  "systems": [
+    "pipeline",
+    "tool_loop",
+    "graph"
+  ],
+  "n_items": 120,
+  "cost_usd": 0.01915,
+  "date": "2026-11-25",
+  "chat_model": "gpt-6-luna"
+}

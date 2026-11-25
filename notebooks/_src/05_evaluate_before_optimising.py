@@ -206,9 +206,11 @@ wrong["failure"] = wrong["hit"].map({True: "generation", False: "retrieval"}).fi
 wrong[["id", "category", "failure", "evidence_recall", "answer"]]
 
 # %% [markdown]
-# Keep this table in mind. Most failures of this baseline are **retrieval** failures, concentrated
-# in comparative and metadata-filter questions: questions that need facts from several chunks, or
-# a filter on hotel attributes. That's exactly what notebooks 06 and 07 go after. Notebook 08 turns
+# Keep this table in mind. In the run saved here the baseline answers 23 of 35 questions correctly,
+# and **9 of the 12 failures are retrieval failures**, 6 of them comparative or metadata-filter
+# questions: questions that need facts from several chunks, or a filter on hotel attributes.
+# RAGAS agrees from another angle: context recall is lowest exactly there (0.07 for metadata-filter
+# questions). That's exactly what notebooks 06 and 07 go after. Notebook 08 turns
 # this triage into a reusable tool.
 #
 # ## Your turn

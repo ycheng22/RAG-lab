@@ -125,7 +125,7 @@ def triage(rows: list[dict], items: list[EvalItem]) -> pd.DataFrame:
     out = []
     for row, correct in zip(rows, verdicts):
         item = by_id[row["id"]]
-        refused = chains.NOT_FOUND.lower() in row["answer"].lower()
+        refused = evaluation.is_not_found(row["answer"])
         joined = normalise(" ".join(row["contexts"]))
         evidence_found = all(normalise(e) in joined for e in item["evidence"])
         if item["category"] == "unanswerable":

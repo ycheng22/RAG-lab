@@ -1,0 +1,36 @@
+id,category,question,label,evidence_found,correct,answer
+1,factual,What time is check-in at Token Kyoto?,ok,True,True,Check-in at Token Kyoto starts at 4:00 PM.
+2,factual,How many rooms does Token Singapore have?,ok,True,True,Token Singapore has 340 rooms.
+3,factual,Who is the chef at Hanare?,ok,True,True,Kenji Morimoto.
+4,factual,How much is the tasting menu at Dar Zitoun?,ok,True,True,"The tasting menu at Dar Zitoun costs $85 per person, drinks not included."
+5,factual,Is Wi-Fi free at Token hotels?,ok,True,True,Yes. Wi-Fi is free for every guest at every Token Hotels & Resorts property.
+6,factual,How much is the airport transfer from Changi to Token Singapore?,retrieval_failure,False,False,I couldn't find that in the Token Hotels documents.
+7,factual,What are the opening hours of Ridgeline at Token Queenstown?,ok,True,True,Ridgeline is open from 6:00 PM to 10:00 PM.
+8,factual,How many Token Circle points do I need for a free night?,ok,True,True,"You need 10,000 Token Circle points for one free night in a Standard room."
+9,factual,"Can I bring my dog, and what does it cost?",ok,True,True,"Dogs under 10 kg are welcome at Token Lisbon, Token Vancouver, and Token Queenstown for $30 per night. Other properties accept registered assistance animals only."
+10,factual,What time is check-out at Token Cusco?,ok,True,True,Check-out is at 10:00 AM.
+11,comparative,"Which is more expensive per night, Token Lisbon or Token Vancouver?",retrieval_failure,False,True,"Token Vancouver is more expensive: its listed starting rate is $310 per night, compared with Token Lisbon at $240."
+12,comparative,Which Token hotel has the earliest check-in time?,retrieval_failure,False,False,"Token Marrakech has the earliest check-in time, at 1:00 PM."
+13,comparative,"Which has more rooms, Token Kyoto or Token Reykjavík?",retrieval_failure,False,False,I couldn't find that in the Token Hotels documents.
+14,comparative,"Which tasting menu costs more, Hanare's or Lantern Room's?",ok,True,True,"Lantern Room’s tasting menu costs more: $240 per person, compared with Hanare’s $210."
+15,comparative,Do Silver or Gold Token Circle members get the later checkout?,retrieval_failure,False,False,"Yes. Silver members receive late checkout until 1 PM; the FAQ says Silver and Gold members get late checkout as a benefit, but doesn’t specify Gold’s checkout time."
+16,multi_hop,What time does the restaurant at the Token hotel in Morocco open for dinner?,retrieval_failure,False,True,The restaurant opens for dinner at 7:30 PM.
+17,multi_hop,Can I bring my dog to the Token hotel in Japan?,generation_failure,True,False,I couldn't find that in the Token Hotels documents.
+18,multi_hop,Is there parking at the hotel whose restaurant is run by Chef Sigrún Jónsdóttir?,generation_failure,True,False,I couldn't find that in the Token Hotels documents.
+19,multi_hop,What is the signature dish at the restaurant of the cheapest Token hotel?,retrieval_failure,False,False,The documents don’t specify which Token hotel is cheapest. I couldn't find that in the Token Hotels documents.
+20,multi_hop,How much does a Gold Token Circle member pay for late checkout until 2 PM?,ok,True,True,"Gold members receive late checkout until 2 PM as a benefit, so they pay nothing."
+21,multi_hop,Can I reserve a table at the bar of the hotel with the 60-metre infinity pool?,ok,True,True,"No. Skyline Bar at Token Singapore, beside the 60-metre infinity pool, does not accept reservations."
+22,metadata_filter,Which Token hotels in Asia have a swimming pool?,retrieval_failure,False,True,Token Singapore has a swimming pool.
+23,metadata_filter,Which Token hotels have both a pool and a spa?,retrieval_failure,False,False,Token Marrakech and Token Singapore.
+24,metadata_filter,Which Token hotels are rated 5 stars?,generation_failure,True,False,I couldn't find that in the Token Hotels documents.
+25,metadata_filter,Which Token hotels cost less than $250 per night?,retrieval_failure,False,False,I couldn't find that in the Token Hotels documents.
+26,metadata_filter,Which Token hotels in Europe have no spa?,ok,True,True,Token Lisbon and Token Reykjavík have no spa.
+27,unanswerable,Who is the general manager of Token Lisbon?,ok,True,True,I couldn't find that in the Token Hotels documents.
+28,unanswerable,What time does check-in start at Token Paris?,ok,True,True,I couldn't find that in the Token Hotels documents.
+29,unanswerable,Does Token Kyoto have a gym?,ok,True,True,I couldn't find that in the Token Hotels documents.
+30,unanswerable,How much does a helicopter transfer to Token Queenstown cost?,ok,True,True,I couldn't find that in the Token Hotels documents.
+31,unanswerable,What is the phone number of Token Vancouver?,ok,True,True,I couldn't find that in the Token Hotels documents.
+32,conflicting_versions,How many hours before arrival can I cancel for free?,ok,True,True,"For the Flexible rate, you can cancel free of charge up to 72 hours before arrival."
+33,conflicting_versions,Can I cancel an Advance Saver booking?,ok,True,True,No. Advance Saver bookings are non-refundable and cannot be changed or cancelled.
+34,conflicting_versions,What is the no-show fee?,generation_failure,True,False,"The no-show fee is the full stay under the 2025 policy, which is newer than the 2024 policy."
+35,conflicting_versions,Until when can a group booking be cancelled for free?,ok,True,True,A group booking of 5 or more rooms can be cancelled for free up to 14 days before arrival.

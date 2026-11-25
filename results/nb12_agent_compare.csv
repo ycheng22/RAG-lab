@@ -1,0 +1,127 @@
+id,category,system,correct,searched,latency_ms,cost_usd,answer
+1,factual,pipeline,True,True,818,4.8e-05,Check-in at Token Kyoto starts at 4:00 PM.
+1,factual,tool_loop,True,True,1811,0.000149,Check-in at Token Kyoto starts at 4:00 PM.
+1,factual,graph,True,True,2457,0.000225,Check-in starts at 4:00 PM.
+2,factual,pipeline,True,True,868,4.9e-05,Token Singapore has 340 rooms.
+2,factual,tool_loop,True,True,1409,0.000166,Token Singapore has 340 rooms.
+2,factual,graph,True,True,2040,0.00021,Token Singapore has 340 rooms.
+3,factual,pipeline,True,True,979,5.6e-05,Kenji Morimoto.
+3,factual,tool_loop,True,True,2010,0.000165,The chef at Hanare is Kenji Morimoto.
+3,factual,graph,True,True,2406,0.000245,The chef at Hanare is Kenji Morimoto.
+4,factual,pipeline,True,True,517,6.3e-05,"The tasting menu at Dar Zitoun costs $85 per person, drinks not included."
+4,factual,tool_loop,True,True,1790,0.000176,"The tasting menu at Dar Zitoun costs **$85 per person**, with drinks not included."
+4,factual,graph,True,True,2129,0.000274,"The tasting menu at Dar Zitoun costs $85 per person, drinks not included."
+5,factual,pipeline,True,True,543,4.1e-05,Yes. Wi-Fi is free for every guest at every Token Hotels & Resorts property.
+5,factual,tool_loop,True,True,2801,0.000148,Yes. Wi‑Fi is free for every guest at every Token Hotels & Resorts property. The network name and password are on your key card sleeve.
+5,factual,graph,True,True,2128,0.000184,Yes. Wi-Fi is free for every guest at every Token Hotels & Resorts property.
+6,factual,pipeline,False,True,620,3.5e-05,I couldn't find that in the Token Hotels documents.
+6,factual,tool_loop,True,True,2080,0.000157,A limousine transfer from Changi Airport to Token Singapore costs **$95 one way**.
+6,factual,graph,True,True,3643,0.000215,A one-way limousine transfer from Changi Airport costs $95.
+7,factual,pipeline,True,True,966,8e-05,Ridgeline is open from 6:00 PM to 10:00 PM.
+7,factual,tool_loop,True,True,2524,0.000153,Ridgeline is open from 6:00 PM to 10:00 PM.
+7,factual,graph,True,True,3085,0.000252,Ridgeline is open from 6:00 PM to 10:00 PM.
+8,factual,pipeline,True,True,1147,4.4e-05,"You need 10,000 Token Circle points for one free night in a Standard room."
+8,factual,tool_loop,True,True,1942,0.000147,"You need 10,000 Token Circle points for one free night in a Standard room."
+8,factual,graph,True,True,2770,0.000149,"10,000 points."
+9,factual,pipeline,True,True,789,5.5e-05,"Dogs under 10 kg are welcome at Token Lisbon, Token Vancouver, and Token Queenstown for $30 per night. Other properties accept registered assistance animals only."
+9,factual,tool_loop,True,True,3547,0.000153,"Dogs under 10 kg are welcome at Token Lisbon, Token Vancouver, and Token Queenstown for $30 per night. At other properties, only registered assistance animals are accepted."
+9,factual,graph,True,True,2309,0.000171,"Dogs under 10 kg are welcome at Token Lisbon, Token Vancouver, and Token Queenstown for $30 per night. Other properties accept registered assistance animals only."
+10,factual,pipeline,True,True,586,5.4e-05,Check-out at Token Cusco is at 10:00 AM.
+10,factual,tool_loop,True,True,2066,0.000157,Check-out at Token Cusco is at 10:00 AM.
+10,factual,graph,True,True,2149,0.000261,Check-out is at 10:00 AM.
+11,comparative,pipeline,True,True,738,7.3e-05,"Token Vancouver is more expensive per night: its starting rate is $310, compared with Token Lisbon’s $240."
+11,comparative,tool_loop,True,True,3844,0.000283,"Token Vancouver is more expensive per night across all room types and seasons. For example, Standard rooms are $310–$405 per night in Vancouver, compared with $240–$310 in Lisbon."
+11,comparative,graph,False,True,2190,0.000222,I couldn't find that in the Token Hotels documents.
+12,comparative,pipeline,False,True,729,8.9e-05,"Token Marrakech, with check-in starting at 1:00 PM."
+12,comparative,tool_loop,True,True,1663,0.000171,Token Cusco has the earliest check-in time: 12:00 PM.
+12,comparative,graph,False,True,2485,0.000357,"Token Marrakech, with check-in starting at 1:00 PM."
+13,comparative,pipeline,False,True,538,5.4e-05,I couldn't find that in the Token Hotels documents.
+13,comparative,tool_loop,True,True,1648,0.000172,"Token Reykjavík has more rooms: 76, compared with Token Kyoto’s 64."
+13,comparative,graph,True,True,2498,0.000214,"Token Reykjavík has more rooms: 76, compared with Token Kyoto’s 64."
+14,comparative,pipeline,True,True,744,7.5e-05,"Lantern Room’s tasting menu costs more: $240 per person, compared with Hanare’s $210."
+14,comparative,tool_loop,True,True,4202,0.000353,"Lantern Room’s tasting menu costs more: **$240 per person**, compared with **$210 at Hanare**—a difference of **$30**."
+14,comparative,graph,True,True,2344,0.000278,"Lantern Room’s tasting menu costs more: $240 per person, compared with Hanare’s $210."
+15,comparative,pipeline,False,True,970,4.6e-05,Yes. Silver and Gold Token Circle members receive late checkout until 2:00 PM.
+15,comparative,tool_loop,True,True,4674,0.000436,"Yes. Silver members get late checkout until **1 PM**, and Gold members until **2 PM**."
+15,comparative,graph,True,True,2115,0.000149,"Yes. Silver members get late checkout until 1 PM, and Gold members until 2 PM."
+16,multi_hop,pipeline,True,True,663,4.7e-05,Dar Zitoun at Token Marrakech opens for dinner at 7:30 PM.
+16,multi_hop,tool_loop,False,True,3410,0.000273,I couldn't find that in the Token Hotels documents.
+16,multi_hop,graph,True,True,3536,0.000323,Dar Zitoun opens for dinner at 7:30 PM.
+17,multi_hop,pipeline,False,True,538,4.6e-05,I couldn't find that in the Token Hotels documents.
+17,multi_hop,tool_loop,True,True,2320,0.000152,"At Token Kyoto, dogs are not allowed; only registered assistance animals are accepted."
+17,multi_hop,graph,False,True,1864,0.0002,I couldn't find that in the Token Hotels documents.
+18,multi_hop,pipeline,True,True,824,6.3e-05,No. Token Reykjavík has no parking.
+18,multi_hop,tool_loop,True,True,3370,0.00017,"No. Token Reykjavík, where Hraun is run by Chef Sigrún Jónsdóttir, has no parking."
+18,multi_hop,graph,True,True,2297,0.00026,No. Token Reykjavík has no parking.
+19,multi_hop,pipeline,False,True,715,6.4e-05,I couldn't find that in the Token Hotels documents.
+19,multi_hop,tool_loop,True,True,2681,0.000354,"The cheapest Token hotel is Token Cusco. Its restaurant, Inti Kitchen, serves alpaca loin with red quinoa as its signature dish."
+19,multi_hop,graph,False,True,5604,0.000315,The documents don’t provide enough information to identify the cheapest Token hotel.
+20,multi_hop,pipeline,False,True,755,4.3e-05,I couldn't find that in the Token Hotels documents.
+20,multi_hop,tool_loop,True,True,1866,0.000161,"Gold Token Circle members receive late checkout until 2 PM as a benefit, so there’s no charge. It must be requested at least one day before departure."
+20,multi_hop,graph,False,True,1281,0.000115,I couldn't find that in the Token Hotels documents.
+21,multi_hop,pipeline,True,True,990,7.4e-05,No. Skyline Bar at Token Singapore does not accept reservations.
+21,multi_hop,tool_loop,True,True,3758,0.000413,"No. The 60-metre infinity pool is at Token Singapore, and its Skyline Bar doesn’t accept reservations—it’s first come, first served."
+21,multi_hop,graph,True,True,2549,0.000267,"No. Skyline Bar at Token Singapore does not accept reservations; it is first come, first served."
+22,metadata_filter,pipeline,False,True,862,7.8e-05,Token Singapore has a swimming pool.
+22,metadata_filter,tool_loop,True,True,1372,0.00017,Token Singapore is the only Token hotel in Asia with a swimming pool.
+22,metadata_filter,graph,True,True,2320,0.000349,Token Singapore has a swimming pool. Token Kyoto does not.
+23,metadata_filter,pipeline,False,True,634,9.3e-05,Token Marrakech and Token Singapore.
+23,metadata_filter,tool_loop,True,True,1509,0.000172,"Token Vancouver, Token Marrakech, and Token Singapore have both a pool and a spa."
+23,metadata_filter,graph,False,True,2424,0.000386,Token Singapore and Token Marrakech.
+24,metadata_filter,pipeline,False,True,720,7.8e-05,I couldn't find that in the Token Hotels documents.
+24,metadata_filter,tool_loop,True,True,1496,0.000174,"The 5-star Token hotels are **Token Kyoto**, **Token Marrakech**, and **Token Singapore**."
+24,metadata_filter,graph,False,True,4117,0.000388,Token Singapore and Token Marrakech.
+25,metadata_filter,pipeline,False,True,628,3.6e-05,I couldn't find that in the Token Hotels documents.
+25,metadata_filter,tool_loop,True,True,2124,0.000387,"By lowest listed nightly rate, these Token hotels have a room option under $250:
+
+- **Token Cusco** — from **$95/night**
+- **Token Reykjavík** — from **$190/night**
+- **Token Lisbon** — from **$240/night**
+
+Rates vary by room type and season."
+25,metadata_filter,graph,False,True,3089,0.000173,"Token Lisbon, starting at $240 per night."
+26,metadata_filter,pipeline,True,True,743,7.6e-05,Token Lisbon and Token Reykjavík.
+26,metadata_filter,tool_loop,True,True,1348,0.000168,Token Lisbon and Token Reykjavík have no spa.
+26,metadata_filter,graph,False,True,2519,0.000267,I couldn't find that in the Token Hotels documents.
+27,unanswerable,pipeline,True,True,1219,7.2e-05,I couldn't find that in the Token Hotels documents.
+27,unanswerable,tool_loop,True,True,2384,0.000148,I couldn't find that in the Token Hotels documents.
+27,unanswerable,graph,True,True,4229,0.000189,I couldn't find that in the Token Hotels documents.
+28,unanswerable,pipeline,True,True,558,8.7e-05,I couldn't find that in the Token Hotels documents.
+28,unanswerable,tool_loop,True,True,3527,0.000402,I couldn't find that in the Token Hotels documents.
+28,unanswerable,graph,True,True,4490,0.000375,I couldn't find that in the Token Hotels documents.
+29,unanswerable,pipeline,True,True,820,5.4e-05,I couldn't find that in the Token Hotels documents.
+29,unanswerable,tool_loop,True,True,2847,0.000149,I couldn’t find that in the Token Hotels documents.
+29,unanswerable,graph,True,True,8107,0.00017,I couldn't find that in the Token Hotels documents.
+30,unanswerable,pipeline,True,True,671,3.6e-05,I couldn't find that in the Token Hotels documents.
+30,unanswerable,tool_loop,True,True,3447,0.000139,I couldn't find that in the Token Hotels documents.
+30,unanswerable,graph,True,True,1388,0.000114,I couldn't find that in the Token Hotels documents.
+31,unanswerable,pipeline,True,True,713,4.9e-05,I couldn't find that in the Token Hotels documents.
+31,unanswerable,tool_loop,True,True,4349,0.000135,I couldn't find that in the Token Hotels documents.
+31,unanswerable,graph,True,True,7758,0.00018,I couldn't find that in the Token Hotels documents.
+32,conflicting_versions,pipeline,True,True,3898,4.3e-05,"For a Flexible rate, you can cancel free of charge up to 72 hours before arrival."
+32,conflicting_versions,tool_loop,True,True,5826,0.000145,"For Flexible-rate bookings, you can cancel for free up to 72 hours before arrival."
+32,conflicting_versions,graph,True,True,3210,0.000163,Flexible-rate bookings can be canceled for free up to 72 hours before arrival.
+33,conflicting_versions,pipeline,True,True,1264,3.8e-05,No. Advance Saver bookings cannot be changed or cancelled.
+33,conflicting_versions,tool_loop,True,True,7575,0.00014,No. Advance Saver bookings are non-refundable and cannot be changed or cancelled.
+33,conflicting_versions,graph,True,True,2407,0.000144,No. Advance Saver bookings cannot be changed or cancelled.
+34,conflicting_versions,pipeline,False,True,1207,5.6e-05,"For a 2025 Flexible booking, the no-show fee is the full stay. The 2025 policy is more recent than the 2024 policy."
+34,conflicting_versions,tool_loop,False,True,6039,0.000144,"For bookings made on or after March 1, 2025, the no-show fee is the full stay."
+34,conflicting_versions,graph,True,True,4939,0.000172,The no-show fee is the full stay.
+35,conflicting_versions,pipeline,True,True,3967,4.6e-05,A group booking of 5 or more rooms can be cancelled free of charge up to 14 days before arrival.
+35,conflicting_versions,tool_loop,True,True,5076,0.000265,Bookings of 5 or more rooms can be cancelled free of charge up to 14 days before arrival.
+35,conflicting_versions,graph,True,True,3047,0.000171,Group bookings of 5 or more rooms can be cancelled free of charge up to 14 days before arrival.
+36,no_search_needed,pipeline,False,True,661,3.4e-05,I couldn't find that in the Token Hotels documents.
+36,no_search_needed,tool_loop,True,False,608,5.3e-05,15% of 200 is 30.
+36,no_search_needed,graph,True,False,1345,2e-05,15% of 200 is 30.
+37,no_search_needed,pipeline,False,True,496,5.4e-05,I couldn't find that in the Token Hotels documents.
+37,no_search_needed,tool_loop,True,False,724,5.7e-05,“Thank you” in Japanese is **ありがとう** (*arigatō*).
+37,no_search_needed,graph,True,False,1539,3.5e-05,"“Thank you” in Japanese is **ありがとう** (*arigatō*). For a more polite version, say **ありがとうございます** (*arigatō gozaimasu*)."
+38,no_search_needed,pipeline,False,True,1191,6.3e-05,I couldn't find that in the Token Hotels documents.
+38,no_search_needed,tool_loop,True,False,771,5.1e-05,The capital of Peru is Lima.
+38,no_search_needed,graph,True,False,1450,1.7e-05,Lima.
+39,no_search_needed,pipeline,False,True,495,3.9e-05,I couldn't find that in the Token Hotels documents.
+39,no_search_needed,tool_loop,True,False,962,5.3e-05,"100 US dollars equals 10,000 cents."
+39,no_search_needed,graph,True,False,2083,2.2e-05,"There are 10,000 cents in 100 US dollars."
+40,no_search_needed,pipeline,False,True,625,5.7e-05,I couldn't find that in the Token Hotels documents.
+40,no_search_needed,tool_loop,True,False,654,5.3e-05,2.5 hours is 150 minutes.
+40,no_search_needed,graph,True,False,1575,1.8e-05,150 minutes.

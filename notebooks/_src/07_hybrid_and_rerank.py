@@ -203,9 +203,15 @@ pd.DataFrame({m: {"accuracy": df["correct"].mean(), "questions": len(df)} for m,
 # - **Reranking** improves the ranking further at zero API cost: it looks at 20 candidates
 #   and keeps the 4 that actually answer the question. The price is a model download, some CPU time,
 #   and latency (look at `latency_ms`).
+# - **Answers follow, but not one for one.** Hybrid alone retrieves better (hit rate 0.80 vs 0.67)
+#   yet answers no more questions correctly (66%): it gains a comparative answer and loses a
+#   multi-hop one, and on metadata-filter questions finding the chunks isn't enough, because the
+#   model still has to combine several hotels correctly. Hybrid + rerank lifts accuracy to
+#   77%, the best retrieval setup in the series, with comparative questions going from 40% to 80%.
 #
-# Compare this with notebook 06: the LLM-powered retrievers spent API calls and mostly didn't help
-# here, while two classic information-retrieval techniques did. **Try the cheap, well-understood
+# Compare this with notebook 06: the LLM-powered retrievers spent API calls for a small gain
+# (MultiQuery) or a loss (compression, SelfQuery), while two classic information-retrieval
+# techniques did better for free. **Try the cheap, well-understood
 # tools before the clever ones.**
 #
 # ## Your turn

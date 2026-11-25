@@ -175,17 +175,20 @@ pd.DataFrame({m: {"accuracy": df["correct"].mean(), "questions": len(df)} for m,
 # %% [markdown]
 # ## 6. What the numbers say
 #
-# In the run saved here none of the three is a clear win on this corpus, and that is the lesson:
+# In the run saved here (35 questions) only one of the three helps, and not by much:
 #
-# - **MultiQuery** nudged evidence recall up, but it also retrieved about 6 chunks per question
-#   instead of 4, cost one LLM call per question and added seconds of latency. Part of the gain may
-#   come simply from *more chunks* (check with `k=8` in the exercises). When we logged the generated
+# - **MultiQuery** raised the retrieval hit rate from 0.67 to 0.77, mostly on comparative and
+#   metadata-filter questions, but answers barely moved: 24 correct instead of 23. It also
+#   retrieved about 5.7 chunks per question instead of 4, cost one LLM call per question and added
+#   about 3 seconds of latency. Part of the gain may come simply from *more chunks* (check with
+#   `k=8` in the exercises). When we logged the generated
 #   queries for all 35 questions, the rewriter sometimes read "Token" as crypto *tokens* ("hotels
 #   that use tokens"). Query rewriting needs domain context.
-# - **Compression** lowered evidence recall. It can only *remove* text from what the base retriever
+# - **Compression** lowered evidence recall (0.81 to 0.64) and answer accuracy (66% to 57%). It can only *remove* text from what the base retriever
 #   found, and on multi-hop questions it removed exactly the sentences linking two facts. Its benefit
 #   is shorter prompts; its risk is dropping what the answer needed.
-# - **SelfQuery** scored *worst*, especially on the metadata-filter questions it was meant to help.
+# - **SelfQuery** scored *worst* (hit rate 0.47, accuracy 54%), and found **none** of the evidence for
+#   the metadata-filter questions it was meant to help.
 #   Two reasons, both visible in section 3: the evidence for those questions sits in PDF profile
 #   chunks that span two hotels and so carry **no** hotel metadata (the filter excludes them), and
 #   the generated search text is often empty (`' '`), so results within the filter come back in

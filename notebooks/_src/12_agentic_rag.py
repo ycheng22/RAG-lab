@@ -174,19 +174,21 @@ compare.pivot_table(index="category", columns="system", values="correct", aggfun
 # %% [markdown]
 # ## 6. What the numbers say
 #
-# In the run saved here:
+# The tables above show the saved full run: all 40 questions, three systems. In that run:
 #
+# - **The tool loop answers 38 of 40 correctly (95%)**, against 31 (78%) for the graph and
+#   23 (58%) for the pipeline.
 # - **The pipeline fails every "no search needed" question**: its grounded prompt refuses anything
 #   that isn't in the documents, so "What is 15% of 200?" gets the refusal sentence. Both agents
-#   answer those directly, without searching (that's the 0.5 in `searched`: half the questions).
-# - **On the hotel questions** the default run has only **one question per category**, so a single
-#   miss swings a category between 1.0 and 0.0. Read those rows as anecdotes; the full run (all
-#   40 questions) is the fair test. Agents run several model calls per question, so their answers
-#   also vary more from run to run than the pipeline's.
+#   answer those directly, without searching (that's why `searched` is 0.875: 35 of 40 questions).
+# - **Structured tools do the heavy lifting.** The tool loop gets every comparative and
+#   metadata-filter question right (pipeline: 40% and 20%) because "which hotels have a pool and a
+#   spa" becomes a table lookup with `list_hotels`. The graph has no hotel-table route, so on
+#   metadata-filter questions it is no better than the pipeline (20%): the advantage comes from the
+#   **tool**, not from being an agent.
 # - **The price is latency and cost**: each agent answer takes several model calls instead of one,
-#   so it is slower and costs two to three times as much per question as the pipeline (compare
-#   `median_latency_ms` and `cost_per_1000_questions`). The graph's grade and self-check calls
-#   make it the slowest.
+#   about three times slower than the pipeline (median about 2.3 s vs 0.7 s) and three to four times
+#   the cost per question (still about $0.0002 with `gpt-6-luna`).
 #
 # **When is an agent worth it?** When questions vary: some need no search, some need several, some
 # need structured data. When every question is "look this up in the documents", a well-tuned

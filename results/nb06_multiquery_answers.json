@@ -1,0 +1,9 @@
+{
+  "profile": "nb04_baseline",
+  "k": 4,
+  "retriever": "multiquery",
+  "n_items": 35,
+  "cost_usd": 0.0039,
+  "date": "2026-11-25",
+  "chat_model": "gpt-6-luna"
+}

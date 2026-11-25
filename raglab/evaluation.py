@@ -120,12 +120,19 @@ Does the assistant's answer contain the key facts of the reference answer, witho
 Extra correct detail is fine. Reply with exactly one word: yes or no."""
 
 
+def is_not_found(answer: str) -> bool:
+    """Does `answer` contain the refusal sentence `chains.NOT_FOUND`? Ignores case, spacing and
+    typographic apostrophes (models sometimes write "couldn’t" for "couldn't")."""
+    clean = lambda t: normalise(t.replace("’", "'").replace("‘", "'"))
+    return clean(NOT_FOUND) in clean(answer)
+
+
 def judge_correct(question: str, answer: str, ground_truth: str, category: str | None = None) -> bool:
     """A cheap LLM judge. For `unanswerable` items the only correct answer is the exact
     refusal sentence `chains.NOT_FOUND` (that's what the grounded prompt asks for)."""
     if category == "unanswerable":
-        return NOT_FOUND.lower() in answer.lower()
-    if NOT_FOUND.lower() in answer.lower():
+        return is_not_found(answer)
+    if is_not_found(answer):
         return False
     verdict = llm.chat(JUDGE_PROMPT.format(question=question, ground_truth=ground_truth, answer=answer))
     return verdict.strip().lower().startswith("yes")

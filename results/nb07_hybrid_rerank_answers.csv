@@ -1,0 +1,37 @@
+id,category,correct,answer
+1,factual,True,Check-in at Token Kyoto starts at 4:00 PM.
+2,factual,True,Token Singapore has 340 rooms.
+3,factual,True,Kenji Morimoto.
+4,factual,True,"$85 per person, drinks not included."
+5,factual,True,Yes. Wi-Fi is free for every guest at every Token Hotels & Resorts property.
+6,factual,True,A limousine transfer from Changi Airport to Token Singapore costs $95 one way.
+7,factual,True,Ridgeline is open from 6:00 PM to 10:00 PM.
+8,factual,True,"You need 10,000 Token Circle points for one free night in a Standard room at any property."
+9,factual,True,"Dogs under 10 kg are welcome at Token Lisbon, Token Vancouver, and Token Queenstown for $30 per night. Other properties accept registered assistance animals only."
+10,factual,True,Check-out at Token Cusco is at 10:00 AM.
+11,comparative,True,"Token Vancouver is more expensive: rates start at $310 per night, compared with $240 at Token Lisbon."
+12,comparative,False,"Token Singapore, with check-in at 2:30 PM."
+13,comparative,True,"Token Reykjavík has more rooms: 76, compared with Token Kyoto’s 64."
+14,comparative,True,"Lantern Room’s tasting menu costs more: $240 per person, compared with Hanare’s $210."
+15,comparative,True,"No. Silver members get late checkout until 1 PM, while Gold members get it until 2 PM. The FAQ’s general member benefit says until 2 PM, but the tier details specify Silver’s earlier time."
+16,multi_hop,True,Dar Zitoun at Token Marrakech opens for dinner at 7:30 PM.
+17,multi_hop,False,I couldn't find that in the Token Hotels documents.
+18,multi_hop,True,No. Token Reykjavík has no parking.
+19,multi_hop,False,I couldn't find that in the Token Hotels documents.
+20,multi_hop,True,"Gold members receive late checkout until 2:00 PM as a benefit, so they pay nothing."
+21,multi_hop,False,I couldn't find that in the Token Hotels documents.
+22,metadata_filter,False,Token Singapore and Token Marrakech have swimming pools.
+23,metadata_filter,False,Token Singapore and Token Marrakech.
+24,metadata_filter,False,"- Token Marrakech
+- Token Singapore"
+25,metadata_filter,False,"Token Lisbon starts at $240 per night. The only other rate under $250 listed is $95 per night, but the passage does not identify that hotel."
+26,metadata_filter,True,Token Lisbon and Token Reykjavík.
+27,unanswerable,True,I couldn't find that in the Token Hotels documents.
+28,unanswerable,True,I couldn't find that in the Token Hotels documents.
+29,unanswerable,True,I couldn't find that in the Token Hotels documents.
+30,unanswerable,True,I couldn't find that in the Token Hotels documents.
+31,unanswerable,True,I couldn't find that in the Token Hotels documents.
+32,conflicting_versions,True,"For the Flexible rate, you can cancel for free up to 72 hours before arrival."
+33,conflicting_versions,True,No. Advance Saver bookings cannot be changed or cancelled.
+34,conflicting_versions,True,The most recent policy says the no-show fee is the full stay.
+35,conflicting_versions,True,Bookings of 5 or more rooms can be cancelled free of charge up to 14 days before arrival.
