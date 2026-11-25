@@ -1,0 +1,16 @@
+# Used by `docker build -f service/Dockerfile .` (BuildKit reads <Dockerfile>.dockerignore).
+.git
+.env
+.env.*
+.venv
+.venv-*
+.cache
+.superpowers
+**/__pycache__
+**/.ipynb_checkpoints
+notebooks
+results
+diagrams
+docs
+tools
+data/eval

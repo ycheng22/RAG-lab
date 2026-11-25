@@ -1,0 +1,128 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "The Token Hotels RAG service",
+    "output": "diagrams/service_architecture.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "lanes": [
+    {
+      "id": "client",
+      "label": "Client"
+    },
+    {
+      "id": "docs",
+      "label": "New documents"
+    },
+    {
+      "id": "svc",
+      "label": "FastAPI service"
+    },
+    {
+      "id": "data",
+      "label": "Data and models"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "app",
+      "lane": "client",
+      "col": 0,
+      "type": "external",
+      "label": "Client app",
+      "sublabel": "sends X-API-Key"
+    },
+    {
+      "id": "mw",
+      "lane": "svc",
+      "col": 1,
+      "type": "backend",
+      "label": "JSON log middleware",
+      "sublabel": "request id, latency, cost"
+    },
+    {
+      "id": "auth",
+      "lane": "svc",
+      "col": 2,
+      "type": "backend",
+      "label": "Auth + rate limit",
+      "sublabel": "401 · 429 · 422"
+    },
+    {
+      "id": "ask",
+      "lane": "svc",
+      "col": 3,
+      "type": "backend",
+      "label": "POST /ask",
+      "sublabel": "retrieve, answer, verify"
+    },
+    {
+      "id": "ingest",
+      "lane": "docs",
+      "col": 3,
+      "type": "backend",
+      "label": "POST /ingest",
+      "sublabel": "screen, then sync_index"
+    },
+    {
+      "id": "vs",
+      "lane": "data",
+      "col": 3,
+      "type": "database",
+      "label": "Vector store",
+      "sublabel": "Chroma or pgvector"
+    },
+    {
+      "id": "oai",
+      "lane": "data",
+      "col": 4,
+      "type": "cloud",
+      "label": "OpenAI",
+      "sublabel": "chat + embeddings"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "app",
+      "to": "mw",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "e2",
+      "from": "mw",
+      "to": "auth"
+    },
+    {
+      "id": "e3",
+      "from": "auth",
+      "to": "ask"
+    },
+    {
+      "id": "e4",
+      "from": "auth",
+      "to": "ingest",
+      "fromSide": "top",
+      "toSide": "left"
+    },
+    {
+      "id": "e5",
+      "from": "ask",
+      "to": "vs"
+    },
+    {
+      "id": "e6",
+      "from": "ask",
+      "to": "oai",
+      "fromSide": "right",
+      "toSide": "top",
+      "variant": "emphasis"
+    }
+  ]
+}

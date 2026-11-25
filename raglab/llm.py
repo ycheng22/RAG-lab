@@ -11,6 +11,7 @@ import hashlib
 import sqlite3
 import threading
 from collections import defaultdict
+from contextvars import ContextVar
 from functools import lru_cache
 
 import numpy as np
@@ -51,6 +52,29 @@ def client() -> OpenAI:
 # ── cost tracking ────────────────────────────────────────────────────────────
 
 
+# ── per-request metering (added in notebook 11) ──────────────────────────────
+# The global `cost` meter mixes concurrent requests. A web service sets a fresh list in this context
+# variable at the start of each request; every `CostTracker.add` in that request's context (including
+# worker threads started from it) is also appended there.
+_request_meter: ContextVar[list | None] = ContextVar("raglab_request_meter", default=None)
+
+
+def start_meter() -> list:
+    """Start metering the current context (one request). Returns the list that collects
+    (model, input_tokens, output_tokens) tuples; summarise it with `meter_totals`."""
+    meter: list = []
+    _request_meter.set(meter)
+    return meter
+
+
+def meter_totals(meter: list) -> dict:
+    """{"input_tokens", "output_tokens", "cost_usd"} for a list from `start_meter`."""
+    tin = sum(m[1] for m in meter)
+    tout = sum(m[2] for m in meter)
+    usd = sum(CostTracker.price_of(m[0], m[1], m[2]) or 0.0 for m in meter)
+    return {"input_tokens": tin, "output_tokens": tout, "cost_usd": round(usd, 6)}
+
+
 class CostTracker:
     """Counts calls, tokens and dollars per model."""
 
@@ -68,6 +92,9 @@ class CostTracker:
             row[0] += 1
             row[1] += int(input_tokens or 0)
             row[2] += int(output_tokens or 0)
+        meter = _request_meter.get()
+        if meter is not None:  # a per-request meter is active (see start_meter)
+            meter.append((model, int(input_tokens or 0), int(output_tokens or 0)))
 
     @staticmethod
     def price_of(model: str, input_tokens: int, output_tokens: int) -> float | None:
