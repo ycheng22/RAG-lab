@@ -122,3 +122,124 @@ def get_retriever(mode: str, store, *, k: int = 4, chunks: list[Document] | None
             search_kwargs={"k": k},
         )
     raise ValueError(f"Unknown retriever mode {mode!r}. Choose from: {', '.join(MODES)}")
+
+
+# ── keyword, hybrid and reranked retrieval (added in notebook 07) ────────────
+
+import importlib.util  # noqa: E402
+import re  # noqa: E402
+
+from langchain_core.callbacks import CallbackManagerForRetrieverRun  # noqa: E402
+
+RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L6-v2"
+MODES = MODES + ("bm25", "hybrid", "hybrid_rerank")
+
+
+def tokenize(text: str) -> list[str]:
+    """Lower-case word tokens for BM25 ("Check-in" -> ["check", "in"])."""
+    return re.findall(r"\w+", text.lower())
+
+
+def _doc_key(doc: Document) -> tuple[str, str]:
+    return (doc.metadata.get("source_file", ""), doc.page_content)
+
+
+def rrf_fuse(result_lists: list[list[Document]], *, k_rrf: int = 60, top_n: int = 4) -> list[Document]:
+    """Reciprocal Rank Fusion: score(doc) = sum over lists of 1 / (k_rrf + rank), rank starting at 1.
+    Documents ranked high in several lists win; raw scores from different systems are never compared."""
+    scores: dict[tuple[str, str], float] = {}
+    first_seen: dict[tuple[str, str], Document] = {}
+    for results in result_lists:
+        for rank, doc in enumerate(results, start=1):
+            key = _doc_key(doc)
+            scores[key] = scores.get(key, 0.0) + 1.0 / (k_rrf + rank)
+            first_seen.setdefault(key, doc)
+    best = sorted(scores, key=scores.get, reverse=True)[:top_n]
+    return [first_seen[key] for key in best]
+
+
+def has_rerank_extra() -> bool:
+    """True when sentence-transformers (the [rerank] extra) is installed."""
+    return importlib.util.find_spec("sentence_transformers") is not None
+
+
+_cross_encoder = None
+
+
+def _get_cross_encoder():
+    global _cross_encoder
+    if _cross_encoder is None:
+        if not has_rerank_extra():
+            raise ImportError("Reranking needs the [rerank] extra: run `uv sync --extra rerank` (downloads PyTorch).")
+        import os
+
+        os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
+        os.environ.setdefault("TRANSFORMERS_VERBOSITY", "error")
+        os.environ.setdefault("HF_HUB_VERBOSITY", "error")
+        from sentence_transformers import CrossEncoder
+
+        _cross_encoder = CrossEncoder(RERANK_MODEL, device="cpu")
+    return _cross_encoder
+
+
+def rerank(question: str, docs: list[Document], top_n: int = 4) -> list[Document]:
+    """Score every (question, chunk) pair with a local cross-encoder and keep the top_n."""
+    if not docs:
+        return []
+    scores = _get_cross_encoder().predict([(question, d.page_content) for d in docs])
+    order = sorted(range(len(docs)), key=lambda i: float(scores[i]), reverse=True)
+    return [docs[i] for i in order[:top_n]]
+
+
+class HybridRetriever(BaseRetriever):
+    """Vector search + BM25 keyword search, fused with RRF; optionally reranked by a cross-encoder."""
+
+    vector: BaseRetriever
+    keyword: BaseRetriever
+    k: int = 4
+    fetch_k: int = 20
+    use_rerank: bool = False
+
+    def _get_relevant_documents(self, query: str, *, run_manager: CallbackManagerForRetrieverRun) -> list[Document]:
+        fused = rrf_fuse(
+            [self.vector.invoke(query), self.keyword.invoke(query)],
+            top_n=self.fetch_k if self.use_rerank else self.k,
+        )
+        return rerank(query, fused, top_n=self.k) if self.use_rerank else fused
+
+
+def _bm25(chunks: list[Document] | None, k: int):
+    if chunks is None:
+        raise ValueError("BM25 needs the chunks: pass chunks=bootstrap.get_chunks(profile)")
+    from langchain_community.retrievers import BM25Retriever
+
+    return BM25Retriever.from_documents(chunks, k=k, preprocess_func=tokenize)
+
+
+_base_get_retriever = get_retriever
+
+
+def get_retriever(mode: str, store, *, k: int = 4, chunks: list[Document] | None = None, **kw) -> BaseRetriever:  # noqa: F811
+    """One factory for every retriever in the series (notebook 07 adds three modes).
+
+    bm25           keyword search (BM25) over the same chunks; needs chunks=...
+    hybrid         vector top-fetch_k + BM25 top-fetch_k, fused with RRF, keep k
+    hybrid_rerank  hybrid with fetch_k candidates, then a local cross-encoder keeps the best k
+    """
+    if mode not in ("bm25", "hybrid", "hybrid_rerank"):
+        return _base_get_retriever(mode, store, k=k, chunks=chunks, **kw)
+    fetch_k = kw.get("fetch_k", 20)
+    if mode == "bm25":
+        return _bm25(chunks, k)
+    if mode == "hybrid_rerank" and not has_rerank_extra():
+        raise ImportError("Reranking needs the [rerank] extra: run `uv sync --extra rerank` (downloads PyTorch).")
+    return HybridRetriever(
+        vector=store.as_retriever(search_kwargs={"k": fetch_k}),
+        keyword=_bm25(chunks, fetch_k),
+        k=k,
+        fetch_k=fetch_k,
+        use_rerank=(mode == "hybrid_rerank"),
+    )
+
+
+get_retriever.__doc__ = (_base_get_retriever.__doc__ or "") + (get_retriever.__doc__ or "")

@@ -1,0 +1,120 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Hybrid search + reranking",
+    "output": "diagrams/hybrid_rerank.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "lanes": [
+    {
+      "id": "vec",
+      "label": "Meaning (vector search)"
+    },
+    {
+      "id": "fuse",
+      "label": "Combine and re-score"
+    },
+    {
+      "id": "kw",
+      "label": "Exact words (BM25)"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "q",
+      "lane": "fuse",
+      "col": 0,
+      "type": "external",
+      "label": "Question"
+    },
+    {
+      "id": "v",
+      "lane": "vec",
+      "col": 1,
+      "type": "database",
+      "label": "Vector top 20",
+      "sublabel": "paraphrases match"
+    },
+    {
+      "id": "b",
+      "lane": "kw",
+      "col": 1,
+      "type": "database",
+      "label": "BM25 top 20",
+      "sublabel": "names, codes, rare words"
+    },
+    {
+      "id": "rrf",
+      "lane": "fuse",
+      "col": 2,
+      "type": "backend",
+      "label": "RRF fusion",
+      "sublabel": "Σ 1 / (60 + rank)"
+    },
+    {
+      "id": "ce",
+      "lane": "fuse",
+      "col": 3,
+      "type": "cloud",
+      "label": "Cross-encoder",
+      "sublabel": "reads question + chunk"
+    },
+    {
+      "id": "out",
+      "lane": "fuse",
+      "col": 4,
+      "type": "frontend",
+      "label": "Top 4",
+      "sublabel": "to the prompt"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "q",
+      "to": "v",
+      "fromSide": "top",
+      "toSide": "left"
+    },
+    {
+      "id": "e2",
+      "from": "q",
+      "to": "b",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "e3",
+      "from": "v",
+      "to": "rrf",
+      "label": "ranks",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "e4",
+      "from": "b",
+      "to": "rrf",
+      "label": "ranks",
+      "fromSide": "right",
+      "toSide": "bottom"
+    },
+    {
+      "id": "e5",
+      "from": "rrf",
+      "to": "ce",
+      "label": "20 candidates"
+    },
+    {
+      "id": "e6",
+      "from": "ce",
+      "to": "out",
+      "variant": "emphasis"
+    }
+  ]
+}
