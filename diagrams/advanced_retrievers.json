@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Three advanced retrievers: where the extra LLM call goes",
+    "output": "diagrams/advanced_retrievers.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": { "mode": "hidden" }
+  },
+  "lanes": [
+    { "id": "mq", "label": "MultiQuery: more ways to ask" },
+    { "id": "cc", "label": "Contextual compression: less noise" },
+    { "id": "sq", "label": "SelfQuery: filters from words" }
+  ],
+  "nodes": [
+    { "id": "mq_q", "lane": "mq", "col": 0, "type": "external", "label": "Question" },
+    { "id": "mq_llm", "lane": "mq", "col": 1, "type": "cloud", "label": "LLM rephrases", "sublabel": "3 variants + original" },
+    { "id": "mq_search", "lane": "mq", "col": 2, "type": "database", "label": "Search each", "sublabel": "k per query" },
+    { "id": "mq_out", "lane": "mq", "col": 3, "type": "frontend", "label": "Merged, deduplicated", "sublabel": "more recall, more chunks" },
+    { "id": "cc_q", "lane": "cc", "col": 0, "type": "external", "label": "Question" },
+    { "id": "cc_search", "lane": "cc", "col": 1, "type": "database", "label": "Search", "sublabel": "top k chunks" },
+    { "id": "cc_llm", "lane": "cc", "col": 2, "type": "cloud", "label": "LLM extracts", "sublabel": "one call per chunk" },
+    { "id": "cc_out", "lane": "cc", "col": 3, "type": "frontend", "label": "Relevant sentences", "sublabel": "shorter prompt" },
+    { "id": "sq_q", "lane": "sq", "col": 0, "type": "external", "label": "Question" },
+    { "id": "sq_llm", "lane": "sq", "col": 1, "type": "cloud", "label": "LLM builds query", "sublabel": "text + metadata filter" },
+    { "id": "sq_search", "lane": "sq", "col": 2, "type": "database", "label": "Filtered search", "sublabel": "continent = Asia AND pool" },
+    { "id": "sq_out", "lane": "sq", "col": 3, "type": "frontend", "label": "Matching chunks", "sublabel": "only if metadata exists" }
+  ],
+  "edges": [
+    { "id": "m1", "from": "mq_q", "to": "mq_llm" },
+    { "id": "m2", "from": "mq_llm", "to": "mq_search" },
+    { "id": "m3", "from": "mq_search", "to": "mq_out", "variant": "emphasis" },
+    { "id": "c1", "from": "cc_q", "to": "cc_search" },
+    { "id": "c2", "from": "cc_search", "to": "cc_llm" },
+    { "id": "c3", "from": "cc_llm", "to": "cc_out", "variant": "emphasis" },
+    { "id": "s1", "from": "sq_q", "to": "sq_llm" },
+    { "id": "s2", "from": "sq_llm", "to": "sq_search" },
+    { "id": "s3", "from": "sq_search", "to": "sq_out", "variant": "emphasis" }
+  ]
+}
