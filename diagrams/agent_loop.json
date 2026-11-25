@@ -1,0 +1,40 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Agentic RAG: the model decides when to search",
+    "output": "diagrams/agent_loop.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": { "mode": "hidden" }
+  },
+  "lanes": [
+    { "id": "decide", "label": "Decide" },
+    { "id": "docs", "label": "Search the documents" },
+    { "id": "table", "label": "Look up structured data" },
+    { "id": "answer", "label": "Answer" }
+  ],
+  "nodes": [
+    { "id": "q", "lane": "decide", "col": 0, "type": "external", "label": "Question" },
+    { "id": "route", "lane": "decide", "col": 1, "type": "cloud", "label": "Route", "sublabel": "search, rates or answer directly" },
+    { "id": "rewrite", "lane": "decide", "col": 3, "type": "cloud", "label": "Rewrite the query", "sublabel": "at most once" },
+    { "id": "retrieve", "lane": "docs", "col": 2, "type": "database", "label": "search_docs", "sublabel": "hybrid search" },
+    { "id": "grade", "lane": "docs", "col": 3, "type": "cloud", "label": "Grade", "sublabel": "do the passages answer it?" },
+    { "id": "rates", "lane": "table", "col": 2, "type": "database", "label": "lookup_rates", "sublabel": "the rate table" },
+    { "id": "direct", "lane": "answer", "col": 1, "type": "frontend", "label": "Answer directly", "sublabel": "no tools, no cost of search" },
+    { "id": "generate", "lane": "answer", "col": 4, "type": "cloud", "label": "Generate", "sublabel": "from the context only" },
+    { "id": "check", "lane": "answer", "col": 5, "type": "frontend", "label": "Self-check", "sublabel": "unsupported → refusal" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "q", "to": "route" },
+    { "id": "e2", "from": "route", "to": "retrieve", "label": "search" },
+    { "id": "e3", "from": "route", "to": "rates", "label": "rates" },
+    { "id": "e4", "from": "route", "to": "direct", "label": "general" },
+    { "id": "e5", "from": "retrieve", "to": "grade" },
+    { "id": "e6", "from": "grade", "to": "rewrite", "label": "no" },
+    { "id": "e7", "from": "rewrite", "to": "retrieve" },
+    { "id": "e8", "from": "grade", "to": "generate", "label": "yes", "variant": "emphasis" },
+    { "id": "e9", "from": "rates", "to": "generate" },
+    { "id": "e10", "from": "generate", "to": "check", "variant": "emphasis" }
+  ]
+}
