@@ -13,3 +13,6 @@ __pycache__/
 
 # agent workspace
 .superpowers/
+
+# archify delivery receipts
+diagrams/*.delivery*.json

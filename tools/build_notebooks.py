@@ -49,6 +49,8 @@ def build(name: str, execute: bool, timeout: int) -> bool:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # Windows consoles default to cp1252
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("names", nargs="*", help="notebook names without extension (default: all)")
     parser.add_argument("--no-execute", action="store_true")

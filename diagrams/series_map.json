@@ -1,0 +1,219 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "RAG-lab: the learning path",
+    "output": "diagrams/series_map.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "lanes": [
+    {
+      "id": "foundations",
+      "label": "Part 1 · Foundations (plain Python)"
+    },
+    {
+      "id": "tune",
+      "label": "Part 2 · Judge & tune (LangChain)"
+    },
+    {
+      "id": "prod",
+      "label": "Part 3 · Production"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "nb00",
+      "lane": "foundations",
+      "col": 0,
+      "type": "frontend",
+      "label": "00 Setup & costs",
+      "sublabel": "llm, display"
+    },
+    {
+      "id": "nb01",
+      "lane": "foundations",
+      "col": 1,
+      "type": "frontend",
+      "label": "01 RAG from scratch",
+      "sublabel": "scratch"
+    },
+    {
+      "id": "nb02",
+      "lane": "foundations",
+      "col": 2,
+      "type": "frontend",
+      "label": "02 Load & chunk",
+      "sublabel": "loaders, chunking"
+    },
+    {
+      "id": "nb03",
+      "lane": "foundations",
+      "col": 3,
+      "type": "frontend",
+      "label": "03 Vector search",
+      "sublabel": "store_chroma, bootstrap"
+    },
+    {
+      "id": "nb04",
+      "lane": "tune",
+      "col": 0,
+      "type": "backend",
+      "label": "04 LangChain pipeline",
+      "sublabel": "chains"
+    },
+    {
+      "id": "nb05",
+      "lane": "tune",
+      "col": 1,
+      "type": "backend",
+      "label": "05 Evaluate first",
+      "sublabel": "evaluation"
+    },
+    {
+      "id": "nb06",
+      "lane": "tune",
+      "col": 2,
+      "type": "backend",
+      "label": "06 Advanced retrievers",
+      "sublabel": "retrievers"
+    },
+    {
+      "id": "nb07",
+      "lane": "tune",
+      "col": 3,
+      "type": "backend",
+      "label": "07 Hybrid + rerank",
+      "sublabel": "retrievers"
+    },
+    {
+      "id": "nb08",
+      "lane": "tune",
+      "col": 4,
+      "type": "backend",
+      "label": "08 Tune & diagnose",
+      "sublabel": "experiments"
+    },
+    {
+      "id": "nb09",
+      "lane": "prod",
+      "col": 0,
+      "type": "cloud",
+      "label": "09 Production indexing",
+      "sublabel": "indexing, store_pg"
+    },
+    {
+      "id": "nb10",
+      "lane": "prod",
+      "col": 1,
+      "type": "cloud",
+      "label": "10 Trustworthy answers",
+      "sublabel": "answering"
+    },
+    {
+      "id": "nb11",
+      "lane": "prod",
+      "col": 2,
+      "type": "cloud",
+      "label": "11 FastAPI service",
+      "sublabel": "service/"
+    },
+    {
+      "id": "nb12",
+      "lane": "prod",
+      "col": 3,
+      "type": "cloud",
+      "label": "12 Agentic RAG",
+      "sublabel": "agent"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e00",
+      "from": "nb00",
+      "to": "nb01"
+    },
+    {
+      "id": "e01",
+      "from": "nb01",
+      "to": "nb02"
+    },
+    {
+      "id": "e02",
+      "from": "nb02",
+      "to": "nb03"
+    },
+    {
+      "id": "e03",
+      "from": "nb03",
+      "to": "nb04",
+      "label": "now in LangChain",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e04",
+      "from": "nb04",
+      "to": "nb05"
+    },
+    {
+      "id": "e05",
+      "from": "nb05",
+      "to": "nb06",
+      "label": "baseline"
+    },
+    {
+      "id": "e06",
+      "from": "nb06",
+      "to": "nb07"
+    },
+    {
+      "id": "e07",
+      "from": "nb07",
+      "to": "nb08"
+    },
+    {
+      "id": "e08",
+      "from": "nb08",
+      "to": "nb09",
+      "label": "make it production-ready",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e09",
+      "from": "nb09",
+      "to": "nb10"
+    },
+    {
+      "id": "e10",
+      "from": "nb10",
+      "to": "nb11"
+    },
+    {
+      "id": "e11",
+      "from": "nb11",
+      "to": "nb12"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "How it fits together",
+      "items": [
+        "Each notebook adds modules to the shared raglab package (shown under each title)",
+        "Any notebook runs on its own: it rebuilds the index it needs"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "What you can do at the end",
+      "items": [
+        "Judge and tune someone else's RAG system",
+        "Ship a FastAPI RAG service",
+        "Build an agent that decides when to search"
+      ]
+    }
+  ]
+}
