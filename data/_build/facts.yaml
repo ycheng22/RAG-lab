@@ -1,0 +1,298 @@
+# Single source of truth for the fictional Token Hotels & Resorts corpus.
+# Every number that appears in data/corpus/ comes from this file (see build_corpus.py).
+# Token Hotels & Resorts is a fictional company created for the RAG-lab tutorial.
+
+brand: Token Hotels & Resorts
+loyalty_name: Token Circle
+disclaimer: >-
+  Token Hotels & Resorts is a fictional company created for the RAG-lab tutorial.
+  It has no affiliation with any real business.
+
+hotels:
+  - name: Token Lisbon
+    city: Lisbon
+    country: Portugal
+    continent: Europe
+    star_rating: 4
+    price_per_night: 240
+    rooms: 132
+    has_pool: true
+    has_spa: false
+    pool_note: a heated rooftop pool overlooking the Tagus river
+    check_in: "3:00 PM"
+    check_out: "11:00 AM"
+    airport_transfer: An airport shuttle leaves every 30 minutes between 6 AM and 11 PM and costs $20 per person.
+    overview: >-
+      Token Lisbon sits on a cobbled street in the Chiado district, a short walk from the river.
+      The building is a restored nineteenth-century tile factory, and many rooms keep the original azulejo walls.
+    restaurants:
+      - name: Maré
+        cuisine: Portuguese seafood
+        chef: Inês Carvalho
+        hours: "7:00 PM - 11:00 PM, closed Sundays"
+        dress_code: Smart casual
+        reservations: Recommended
+        signature_dish: cataplana of clams and chorizo
+        tasting_menu_usd: 95
+        story: >-
+          Chef Inês Carvalho grew up in a fishing family in Peniche and buys her fish at the Cascais market every morning.
+
+  - name: Token Kyoto
+    city: Kyoto
+    country: Japan
+    continent: Asia
+    star_rating: 5
+    price_per_night: 520
+    rooms: 64
+    has_pool: false
+    has_spa: true
+    spa_note: a private onsen-style spa fed by mineral water
+    check_in: "4:00 PM"
+    check_out: "11:00 AM"
+    airport_transfer: A private car from Kansai Airport costs $180 one way and must be booked 48 hours ahead.
+    overview: >-
+      Token Kyoto is a quiet ryokan-style hotel in the Higashiyama district, built around a moss garden.
+      Rooms have tatami floors, futon or western beds, and sliding paper screens.
+    restaurants:
+      - name: Hanare
+        cuisine: Kaiseki
+        chef: Kenji Morimoto
+        hours: "6:00 PM - 9:30 PM"
+        dress_code: Smart; no shorts or sandals
+        reservations: Required at least 3 days ahead
+        signature_dish: seasonal hassun platter
+        tasting_menu_usd: 210
+        story: >-
+          Chef Kenji Morimoto trained for twelve years in Gion before opening Hanare, which seats only fourteen guests.
+
+  - name: Token Vancouver
+    city: Vancouver
+    country: Canada
+    continent: North America
+    star_rating: 4
+    price_per_night: 310
+    rooms: 210
+    has_pool: true
+    has_spa: true
+    pool_note: an indoor saltwater pool
+    spa_note: a full-service spa with six treatment rooms
+    check_in: "3:30 PM"
+    check_out: "12:00 PM"
+    airport_transfer: The Canada Line SkyTrain station is two blocks away; the hotel does not run a shuttle.
+    overview: >-
+      Token Vancouver is a glass tower in Coal Harbour with views of the North Shore mountains.
+      It is popular with business travellers and with families heading to Stanley Park.
+    restaurants:
+      - name: Tidewater Grill
+        cuisine: Pacific Northwest
+        chef: Maya Fontaine
+        hours: "5:30 PM - 10:00 PM"
+        dress_code: Casual
+        reservations: Recommended on weekends
+        signature_dish: cedar-plank salmon
+        tasting_menu_usd: 120
+        story: >-
+          Chef Maya Fontaine works with First Nations fishers and local foragers, and the menu changes every month.
+
+  - name: Token Queenstown
+    city: Queenstown
+    country: New Zealand
+    continent: Oceania
+    star_rating: 4
+    price_per_night: 280
+    rooms: 88
+    has_pool: false
+    has_spa: true
+    spa_note: an alpine spa with a hot tub and sauna facing Lake Wakatipu
+    check_in: "2:00 PM"
+    check_out: "10:00 AM"
+    airport_transfer: A free airport shuttle runs on request; call the front desk when you land.
+    overview: >-
+      Token Queenstown is a timber-and-stone lodge on the edge of Lake Wakatipu.
+      Guests use it as a base for skiing in winter and hiking and bungee jumping in summer.
+    restaurants:
+      - name: Ridgeline
+        cuisine: Modern New Zealand
+        chef: Tom Hargreaves
+        hours: "6:00 PM - 10:00 PM"
+        dress_code: Casual
+        reservations: Walk-ins welcome
+        signature_dish: slow-roasted lamb shoulder
+        tasting_menu_usd: null
+        story: >-
+          Chef Tom Hargreaves sources lamb from a high-country station forty minutes from the hotel.
+
+  - name: Token Marrakech
+    city: Marrakech
+    country: Morocco
+    continent: Africa
+    star_rating: 5
+    price_per_night: 410
+    rooms: 54
+    has_pool: true
+    has_spa: true
+    pool_note: a courtyard pool shaded by orange trees
+    spa_note: a traditional hammam and spa
+    check_in: "1:00 PM"
+    check_out: "12:00 PM"
+    airport_transfer: Airport pickup is complimentary for stays of three nights or more.
+    overview: >-
+      Token Marrakech is a riad of three linked courtyards inside the medina, five minutes from Jemaa el-Fnaa square.
+      Mint tea is served on arrival and the roof terrace looks out over the Atlas mountains.
+    restaurants:
+      - name: Dar Zitoun
+        cuisine: Moroccan
+        chef: Samira Benali
+        hours: "7:30 PM - 11:30 PM"
+        dress_code: Smart casual
+        reservations: Required
+        signature_dish: seven-hour lamb tagine with preserved lemon
+        tasting_menu_usd: 85
+        story: >-
+          Chef Samira Benali cooks her grandmother's recipes over charcoal, and the bread is baked in the riad's own oven.
+
+  - name: Token Singapore
+    city: Singapore
+    country: Singapore
+    continent: Asia
+    star_rating: 5
+    price_per_night: 690
+    rooms: 340
+    has_pool: true
+    has_spa: true
+    pool_note: a 60-metre infinity pool on the 52nd floor
+    spa_note: a spa and wellness floor with a gym and steam rooms
+    check_in: "2:30 PM"
+    check_out: "11:00 AM"
+    airport_transfer: A limousine transfer from Changi Airport costs $95 one way.
+    overview: >-
+      Token Singapore is the group's flagship tower on Marina Bay, with direct access to the waterfront promenade.
+      It hosts most of the group's conferences and has the largest ballroom in the portfolio.
+    restaurants:
+      - name: Lantern Room
+        cuisine: Modern Peranakan
+        chef: Daniel Lim
+        hours: "6:00 PM - 10:30 PM"
+        dress_code: Smart elegant
+        reservations: Required
+        signature_dish: lobster laksa
+        tasting_menu_usd: 240
+        story: >-
+          Chef Daniel Lim reworks Nyonya family dishes with modern technique, and the tasting menu has nine courses.
+      - name: Skyline Bar
+        cuisine: Rooftop cocktails and small plates
+        chef: Head bartender Priya Nair
+        hours: "5:00 PM - 1:00 AM"
+        dress_code: Smart casual
+        reservations: Not accepted
+        signature_dish: the Marina Sling cocktail
+        tasting_menu_usd: null
+        story: >-
+          Skyline Bar sits beside the infinity pool and is first come, first served.
+
+  - name: Token Reykjavík
+    city: Reykjavík
+    country: Iceland
+    continent: Europe
+    star_rating: 3
+    price_per_night: 190
+    rooms: 76
+    has_pool: false
+    has_spa: false
+    check_in: "4:30 PM"
+    check_out: "11:00 AM"
+    airport_transfer: The Flybus from Keflavík Airport stops outside the entrance and costs $35 per person.
+    overview: >-
+      Token Reykjavík is a small design hotel near the old harbour, built from a converted fish warehouse.
+      The front desk books northern lights tours every evening from September to March.
+    restaurants:
+      - name: Hraun
+        cuisine: New Nordic
+        chef: Sigrún Jónsdóttir
+        hours: "6:00 PM - 9:00 PM"
+        dress_code: Casual
+        reservations: Recommended
+        signature_dish: arctic char with skyr sauce
+        tasting_menu_usd: 110
+        story: >-
+          Chef Sigrún Jónsdóttir named the restaurant after the lava fields she grew up beside.
+
+  - name: Token Cusco
+    city: Cusco
+    country: Peru
+    continent: South America
+    star_rating: 3
+    price_per_night: 95
+    rooms: 40
+    has_pool: false
+    has_spa: false
+    check_in: "12:00 PM"
+    check_out: "10:00 AM"
+    airport_transfer: Pickup from Cusco airport is free, and coca tea is served on arrival to help with the altitude.
+    overview: >-
+      Token Cusco occupies a colonial mansion two streets from the Plaza de Armas, at 3,400 metres above sea level.
+      Many guests stay here for a few days to acclimatise before hiking to Machu Picchu.
+    restaurants:
+      - name: Inti Kitchen
+        cuisine: Andean
+        chef: Rosa Quispe
+        hours: "12:00 PM - 3:00 PM and 6:00 PM - 9:00 PM"
+        dress_code: Casual
+        reservations: Walk-ins welcome
+        signature_dish: alpaca loin with red quinoa
+        tasting_menu_usd: null
+        story: >-
+          Chef Rosa Quispe grows potatoes and quinoa with her family in the Sacred Valley.
+
+# Room rates: Standard low season = price_per_night. Other rows are derived in build_corpus.py:
+#   Deluxe = Standard x 1.4, Suite = Standard x 2.2, high season = low season x 1.3 (rounded to $5).
+room_types:
+  - name: Standard
+    multiplier: 1.0
+    max_guests: 2
+  - name: Deluxe
+    multiplier: 1.4
+    max_guests: 3
+  - name: Suite
+    multiplier: 2.2
+    max_guests: 4
+seasons:
+  - name: low
+    multiplier: 1.0
+  - name: high
+    multiplier: 1.3
+
+policies:
+  "2024":
+    effective: 1 January 2024
+    free_cancellation_hours: 48
+    late_cancellation_fee: the first night's rate
+    no_show_fee: the first night's rate
+    advance_saver: false
+  "2025":
+    effective: 1 March 2025
+    free_cancellation_hours: 72
+    late_cancellation_fee: the first night's rate
+    no_show_fee: the full stay
+    advance_saver: true
+    advance_saver_discount_percent: 15
+    group_rooms: 5
+    group_cancellation_days: 14
+
+loyalty:
+  points_per_dollar: 10
+  points_for_free_night: 10000
+  points_expire_months: 18
+  tiers:
+    - name: Member
+      nights: 0
+      benefits: [faster premium Wi-Fi, member rates 5% below public rates]
+    - name: Silver
+      nights: 10
+      benefits: [10% off dining, late checkout until 1 PM]
+    - name: Gold
+      nights: 25
+      benefits: [room upgrade when available, late checkout until 2 PM, free breakfast]
+    - name: Platinum
+      nights: 50
+      benefits: [guaranteed late checkout until 4 PM, lounge access, one free night every year]

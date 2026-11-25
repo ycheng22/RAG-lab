@@ -1,0 +1,24 @@
+# {{ brand }} - Property Guide 2025
+
+{{ brand }} operates {{ hotels|length }} hotels on six continents. This guide describes each property: where it is, what it offers, and the practical details guests ask about most often. Prices are in US dollars per night for a Standard room in low season, before taxes.
+
+{% for h in hotels %}
+## {{ h.name }}
+
+{{ h.overview }}
+
+Check-in at {{ h.name }} starts at {{ h.check_in }} and check-out is at {{ h.check_out }}. The hotel has {{ h.rooms }} rooms, and rates at {{ h.name }} start from ${{ h.price_per_night }} per night. {% if h.has_pool %}Guests can use {{ h.pool_note }}.{% else %}{{ h.name }} does not have a swimming pool.{% endif %} {% if h.has_spa %}The hotel also has {{ h.spa_note }}.{% else %}There is no spa at {{ h.name }}.{% endif %} {{ h.airport_transfer }}
+
+| Feature | {{ h.name }} |
+| --- | --- |
+| Location | {{ h.city }}, {{ h.country }} ({{ h.continent }}) |
+| Star rating | {{ h.star_rating }} stars |
+| Rooms | {{ h.rooms }} |
+| Swimming pool | {{ "Yes" if h.has_pool else "No" }} |
+| Spa | {{ "Yes" if h.has_spa else "No" }} |
+| Check-in / check-out | {{ h.check_in }} / {{ h.check_out }} |
+| Rates from | ${{ h.price_per_night }} per night |
+| Restaurants | {{ h.restaurants|map(attribute="name")|join(", ") }} |
+
+{% endfor %}
+{{ disclaimer }}

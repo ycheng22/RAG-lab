@@ -1,0 +1,19 @@
+# {{ loyalty_name }} — the {{ brand }} loyalty program
+
+{{ loyalty_name }} is free to join. Members earn points on every stay and unlock more benefits as they stay more nights in a calendar year.
+
+## Earning and using points
+
+Members earn {{ loyalty.points_per_dollar }} points for every dollar spent on rooms, dining and spa treatments. {{ "{:,}".format(loyalty.points_for_free_night) }} points can be exchanged for one free night in a Standard room at any property. Points expire after {{ loyalty.points_expire_months }} months without any account activity.
+
+## Membership tiers
+
+{% for t in loyalty.tiers %}
+### {{ t.name }}
+
+{% if t.nights %}Reach {{ t.name }} after {{ t.nights }} nights in a calendar year.{% else %}Every member starts at the {{ t.name }} tier.{% endif %} Benefits: {{ t.benefits|join("; ") }}.
+{% endfor %}
+
+---
+
+{{ disclaimer }}

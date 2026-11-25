@@ -1,0 +1,24 @@
+# {{ brand }} — Dining Guide
+
+Every {{ brand }} property has at least one restaurant run by a chef from the region. Menus change with the seasons, and hotel guests can book any restaurant through the front desk or the app.
+
+{% for h in hotels %}
+## {{ h.name }}
+
+{% for r in h.restaurants %}
+### {{ r.name }} — {{ h.name }}
+
+- **Cuisine:** {{ r.cuisine }}
+- **Chef:** {{ r.chef }}
+- **Hours:** {{ r.hours }}
+- **Dress code:** {{ r.dress_code }}
+- **Reservations:** {{ r.reservations }}
+
+{{ r.story }} The signature dish at {{ r.name }} is the {{ r.signature_dish }}.
+{% if r.tasting_menu_usd %}At {{ r.name }} the tasting menu costs ${{ r.tasting_menu_usd }} per person, drinks not included.{% else %}{{ r.name }} serves à la carte only; there is no tasting menu.{% endif %}
+
+{% endfor %}
+{% endfor %}
+---
+
+{{ disclaimer }}

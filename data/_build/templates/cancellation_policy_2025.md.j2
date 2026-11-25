@@ -1,0 +1,23 @@
+{% set p = policies["2025"] %}# {{ brand }} — Cancellation Policy (2025)
+
+Effective {{ p.effective }}. This policy replaces the 2024 cancellation policy for all bookings made on or after that date.
+
+## Flexible rate
+
+Guests on the Flexible rate may cancel free of charge up to {{ p.free_cancellation_hours }} hours before the arrival date. Cancellations are made online, in the app, or by calling the hotel.
+
+## Advance Saver rate
+
+The Advance Saver rate is {{ p.advance_saver_discount_percent }}% cheaper than the Flexible rate, is paid in full at booking, and is non-refundable. Advance Saver bookings cannot be changed or cancelled.
+
+## Late cancellation and no-shows
+
+If you cancel a Flexible booking less than {{ p.free_cancellation_hours }} hours before arrival, we charge {{ p.late_cancellation_fee }}. If you do not arrive and do not cancel, the no-show fee is {{ p.no_show_fee }}.
+
+## Group bookings
+
+Bookings of {{ p.group_rooms }} or more rooms can be cancelled free of charge up to {{ p.group_cancellation_days }} days before arrival.
+
+---
+
+{{ disclaimer }}

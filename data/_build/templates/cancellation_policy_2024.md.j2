@@ -1,0 +1,19 @@
+{% set p = policies["2024"] %}# {{ brand }} — Cancellation Policy (2024)
+
+Effective {{ p.effective }}. This policy applies to all bookings made directly with {{ brand }}.
+
+## Free cancellation
+
+Guests may cancel free of charge up to {{ p.free_cancellation_hours }} hours before the arrival date. Cancellations are made online, in the app, or by calling the hotel.
+
+## Late cancellation and no-shows
+
+If you cancel less than {{ p.free_cancellation_hours }} hours before arrival, we charge {{ p.late_cancellation_fee }}. If you do not arrive and do not cancel, the no-show fee is {{ p.no_show_fee }}.
+
+## Changes to a booking
+
+You can change the dates of a booking free of charge up to {{ p.free_cancellation_hours }} hours before arrival, subject to availability. The new rate may be higher or lower than the original one.
+
+---
+
+{{ disclaimer }}
