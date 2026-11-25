@@ -1,0 +1,34 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Evaluate before you optimise",
+    "output": "diagrams/eval_loop.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": { "mode": "hidden" }
+  },
+  "lanes": [
+    { "id": "run", "label": "Run the system" },
+    { "id": "measure", "label": "Measure" },
+    { "id": "improve", "label": "Improve" }
+  ],
+  "nodes": [
+    { "id": "evalset", "lane": "run", "col": 0, "type": "external", "label": "Eval set", "sublabel": "questions + ground truth" },
+    { "id": "rag", "lane": "run", "col": 1, "type": "backend", "label": "RAG system", "sublabel": "answer + contexts" },
+    { "id": "retr", "lane": "measure", "col": 2, "type": "database", "label": "Retrieval metrics", "sublabel": "hit rate, MRR · no LLM" },
+    { "id": "judge", "lane": "measure", "col": 3, "type": "cloud", "label": "Answer judge", "sublabel": "correct? refused?" },
+    { "id": "ragas", "lane": "measure", "col": 4, "type": "cloud", "label": "RAGAS", "sublabel": "faithfulness, relevancy…" },
+    { "id": "diagnose", "lane": "improve", "col": 4, "type": "security", "label": "Diagnose", "sublabel": "retrieval or generation?" },
+    { "id": "change", "lane": "improve", "col": 5, "type": "backend", "label": "Change one thing", "sublabel": "chunks, k, retriever, prompt" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "evalset", "to": "rag" },
+    { "id": "e2", "from": "rag", "to": "retr", "label": "contexts" },
+    { "id": "e3", "from": "retr", "to": "judge" },
+    { "id": "e4", "from": "judge", "to": "ragas" },
+    { "id": "e5", "from": "ragas", "to": "diagnose", "label": "scores", "variant": "emphasis" },
+    { "id": "e6", "from": "diagnose", "to": "change" },
+    { "id": "e7", "from": "change", "to": "rag", "label": "re-run, compare", "variant": "dashed", "role": "return" }
+  ]
+}
