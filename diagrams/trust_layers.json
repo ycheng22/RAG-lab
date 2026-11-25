@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Defence in depth for RAG answers",
+    "output": "diagrams/trust_layers.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": { "mode": "hidden" }
+  },
+  "lanes": [
+    { "id": "ingest", "label": "At ingest time" },
+    { "id": "answer", "label": "While answering" },
+    { "id": "check", "label": "Before replying" }
+  ],
+  "nodes": [
+    { "id": "docs", "lane": "ingest", "col": 0, "type": "external", "label": "New document" },
+    { "id": "screen", "lane": "ingest", "col": 1, "type": "backend", "label": "Screen for injection", "sublabel": "flag for human review" },
+    { "id": "index", "lane": "ingest", "col": 2, "type": "database", "label": "Index" },
+    { "id": "q", "lane": "answer", "col": 0, "type": "external", "label": "Guest question" },
+    { "id": "retrieve", "lane": "answer", "col": 2, "type": "backend", "label": "Retrieve", "sublabel": "current versions only" },
+    { "id": "prompt", "lane": "answer", "col": 3, "type": "cloud", "label": "Safe prompt", "sublabel": "documents tagged as data" },
+    { "id": "structured", "lane": "answer", "col": 4, "type": "backend", "label": "Structured answer", "sublabel": "found + citations" },
+    { "id": "verify", "lane": "check", "col": 4, "type": "backend", "label": "Verify citations", "sublabel": "every quote must exist" },
+    { "id": "reply", "lane": "check", "col": 5, "type": "frontend", "label": "Reply or refusal", "sublabel": "exact refusal sentence" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "docs", "to": "screen" },
+    { "id": "e2", "from": "screen", "to": "index" },
+    { "id": "e3", "from": "q", "to": "retrieve" },
+    { "id": "e4", "from": "index", "to": "retrieve" },
+    { "id": "e5", "from": "retrieve", "to": "prompt" },
+    { "id": "e6", "from": "prompt", "to": "structured" },
+    { "id": "e7", "from": "structured", "to": "verify" },
+    { "id": "e8", "from": "verify", "to": "reply", "variant": "emphasis" }
+  ]
+}
