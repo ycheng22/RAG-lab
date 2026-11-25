@@ -171,3 +171,24 @@ def make_profile(chunk_size: int, overlap: int, context_prefix: bool = True) -> 
     name = f"grid_cs{chunk_size}_ov{overlap}_p{int(context_prefix)}"
     PROFILES.setdefault(name, IndexProfile(name, "lc", chunk_size, overlap, context_prefix))
     return name
+
+
+# ── incremental indexing (added in notebook 09) ──────────────────────────────
+
+# Same chunking as the baseline; notebook 09 fills it incrementally with `indexing.sync_index`
+# in its own folder (.cache/chroma_nb09), so it never disturbs the other notebooks' indexes.
+PROFILES["nb09_incremental"] = IndexProfile("nb09_incremental", "lc", 800, 150, True)
+
+
+def profile_chunker(profile: str | IndexProfile):
+    """A function docs -> chunks that chunks already-loaded documents the way `profile` says
+    (LangChain chunkers only). Handy as `sync_index(..., chunker=profile_chunker("nb09_incremental"))`."""
+    p = _profile(profile)
+    if p.chunker != "lc":
+        raise ValueError(f"profile_chunker supports 'lc' profiles only, not {p.chunker!r}")
+
+    def chunker(docs: list[Document]) -> list[Document]:
+        chunks = chunking.chunk_corpus_lc(docs, size=p.chunk_size, overlap=p.overlap, context_prefix=False)
+        return chunking.add_context_prefix(chunks) if p.context_prefix else chunks
+
+    return chunker

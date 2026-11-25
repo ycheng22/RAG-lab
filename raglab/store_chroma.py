@@ -175,3 +175,16 @@ def load_lc_store(collection_name: str, *, path: Path | None = None):
         client=get_client(path),
         create_collection_if_not_exists=False,
     )
+
+
+def open_lc_store(collection_name: str, *, path: Path | None = None):
+    """Open a LangChain `Chroma` store, creating an empty cosine collection if it doesn't exist yet
+    (added in notebook 09, for indexes that are filled incrementally by `indexing.sync_index`)."""
+    from langchain_chroma import Chroma
+
+    return Chroma(
+        collection_name=collection_name,
+        embedding_function=llm.CachedEmbeddings(),
+        client=get_client(path),
+        collection_configuration={"hnsw": {"space": "cosine"}},
+    )

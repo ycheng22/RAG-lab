@@ -1,0 +1,144 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Incremental indexing with a manifest",
+    "output": "diagrams/incremental_indexing.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "lanes": [
+    {
+      "id": "detect",
+      "label": "Detect changes (per file)"
+    },
+    {
+      "id": "index",
+      "label": "Re-index only what changed"
+    },
+    {
+      "id": "store",
+      "label": "Store"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "files",
+      "lane": "detect",
+      "col": 0,
+      "type": "external",
+      "label": "Corpus files",
+      "sublabel": "loaded + version-tagged"
+    },
+    {
+      "id": "hash",
+      "lane": "detect",
+      "col": 1,
+      "type": "backend",
+      "label": "Hash each file",
+      "sublabel": "compare with the manifest"
+    },
+    {
+      "id": "skip",
+      "lane": "detect",
+      "col": 3,
+      "type": "frontend",
+      "label": "Unchanged: skip",
+      "sublabel": "no chunking, no embedding"
+    },
+    {
+      "id": "chunk",
+      "lane": "index",
+      "col": 2,
+      "type": "backend",
+      "label": "Chunk the file",
+      "sublabel": "new or changed files"
+    },
+    {
+      "id": "diff",
+      "lane": "index",
+      "col": 3,
+      "type": "backend",
+      "label": "Diff chunk ids",
+      "sublabel": "sha256(file + text)"
+    },
+    {
+      "id": "embed",
+      "lane": "index",
+      "col": 4,
+      "type": "cloud",
+      "label": "Embed new chunks",
+      "sublabel": "unchanged chunks keep their vectors"
+    },
+    {
+      "id": "del",
+      "lane": "store",
+      "col": 3,
+      "type": "backend",
+      "label": "Delete chunk ids",
+      "sublabel": "changed chunks, and every chunk of a deleted file"
+    },
+    {
+      "id": "vs",
+      "lane": "store",
+      "col": 4,
+      "type": "database",
+      "label": "Vector store + manifest",
+      "sublabel": "always serving a full index"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "files",
+      "to": "hash"
+    },
+    {
+      "id": "e2",
+      "from": "hash",
+      "to": "skip",
+      "label": "same hash"
+    },
+    {
+      "id": "e3",
+      "from": "hash",
+      "to": "chunk",
+      "label": "new / changed",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "e5",
+      "from": "chunk",
+      "to": "diff"
+    },
+    {
+      "id": "e6",
+      "from": "diff",
+      "to": "embed",
+      "label": "new ids",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e7",
+      "from": "diff",
+      "to": "del",
+      "label": "old ids"
+    },
+    {
+      "id": "e8",
+      "from": "embed",
+      "to": "vs",
+      "label": "add"
+    },
+    {
+      "id": "e9",
+      "from": "del",
+      "to": "vs",
+      "label": "delete"
+    }
+  ]
+}

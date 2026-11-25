@@ -79,12 +79,13 @@ def load_corpus(include: set[str] | None = None) -> list[Document]:
 # ── LangChain loaders (added in notebook 04) ─────────────────────────────────
 
 
-def load_corpus_lc(include: set[str] | None = None) -> list[Document]:
+def load_corpus_lc(include: set[str] | None = None, *, corpus_dir: Path | None = None) -> list[Document]:
     """Same job as `load_corpus`, using LangChain's document loaders. Every Document gets the same
-    `source_file` metadata; HTML documents also keep `raw_html` for the HTML header splitter."""
+    `source_file` metadata; HTML documents also keep `raw_html` for the HTML header splitter.
+    `corpus_dir` (added in notebook 09) reads another folder instead of data/corpus."""
     from langchain_community.document_loaders import BSHTMLLoader, CSVLoader, PyPDFLoader, TextLoader
 
-    corpus = get_settings().corpus_dir
+    corpus = Path(corpus_dir) if corpus_dir else get_settings().corpus_dir
     docs: list[Document] = []
     for path in sorted(corpus.iterdir()):
         if include is not None and path.name not in include:
