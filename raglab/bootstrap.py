@@ -17,7 +17,7 @@ from raglab import chunking, loaders
 from raglab.config import get_settings
 
 # Bump when the chunking code changes in a way that should invalidate existing indexes.
-BUILD_VERSION = "1"
+BUILD_VERSION = "2"
 
 
 @dataclass(frozen=True)
@@ -32,6 +32,7 @@ class IndexProfile:
 
 PROFILES: dict[str, IndexProfile] = {
     "nb03_raw": IndexProfile("nb03_raw", "hand_recursive", 800, 150, True),
+    "nb04_baseline": IndexProfile("nb04_baseline", "lc", 800, 150, True),
 }
 
 
@@ -116,3 +117,33 @@ def ensure_raw_collection(profile: str = "nb03_raw"):
     collection = store_chroma.create_collection(p.name, chunks, metadata={"fingerprint": fingerprint})
     print(f"[{p.name}] {collection.count()} chunks indexed")
     return collection
+
+
+# ── LangChain indexes (added in notebook 04) ─────────────────────────────────
+
+
+def get_chunks(profile: str) -> list:
+    """The exact chunks indexed for `profile` (re-chunked deterministically; no API calls)."""
+    return build_chunks(profile)
+
+
+def ensure_index(profile: str = "nb04_baseline"):
+    """Return a LangChain Chroma store for `profile`, building it if missing or stale."""
+    from raglab import store_chroma
+
+    p = _profile(profile)
+    fingerprint = corpus_fingerprint(p)
+    client = store_chroma.get_client()
+    try:
+        meta = client.get_collection(p.name).metadata or {}
+    except Exception:
+        meta = None
+    reason = _needs_build(meta, fingerprint)
+    if reason is None:
+        store = store_chroma.load_lc_store(p.name)
+        print(f"[{p.name}] reusing index ({store._collection.count()} chunks)")
+        return store
+    print(f"[{p.name}] {reason}...")
+    store = store_chroma.create_lc_store(build_chunks(p), p.name, collection_metadata={"fingerprint": fingerprint})
+    print(f"[{p.name}] {store._collection.count()} chunks indexed")
+    return store

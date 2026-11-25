@@ -213,3 +213,63 @@ def embed(texts: list[str], *, model: str | None = None) -> list[list[float]]:
 
 def embed_one(text: str) -> list[float]:
     return embed([text])[0]
+
+
+# ── LangChain adapters (added in notebook 04) ────────────────────────────────
+# They route LangChain's calls through the same cache and cost meter as the functions above.
+
+from langchain_core.callbacks import BaseCallbackHandler  # noqa: E402
+from langchain_core.embeddings import Embeddings  # noqa: E402
+
+
+class CachedEmbeddings(Embeddings):
+    """LangChain Embeddings backed by `llm.embed` (disk cache + cost tracking)."""
+
+    def __init__(self, model: str | None = None) -> None:
+        self.model = model or get_settings().embed_model
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        return embed(list(texts), model=self.model)
+
+    def embed_query(self, text: str) -> list[float]:
+        return embed([text], model=self.model)[0]
+
+
+class CostCallbackHandler(BaseCallbackHandler):
+    """Adds the token usage of every LangChain chat call to `llm.cost`."""
+
+    def __init__(self, model: str) -> None:
+        self.model = model
+
+    def on_llm_end(self, response, **kwargs) -> None:
+        counted = False
+        for generations in response.generations:
+            for gen in generations:
+                usage = getattr(getattr(gen, "message", None), "usage_metadata", None)
+                if usage:
+                    cost.add(self.model, usage.get("input_tokens", 0), usage.get("output_tokens", 0))
+                    counted = True
+        if not counted and response.llm_output:  # some providers report usage here instead
+            usage = response.llm_output.get("token_usage") or {}
+            if usage:
+                cost.add(self.model, usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0))
+
+
+def get_lc_chat(model: str | None = None, temperature: float = 0.0):
+    """A LangChain ChatOpenAI wired to the cost meter. Reasoning models get `reasoning_effort`
+    instead of `temperature` (they reject temperature)."""
+    from langchain_openai import ChatOpenAI
+
+    settings = get_settings()
+    model = model or settings.chat_model
+    if not settings.openai_api_key.strip():
+        raise RuntimeError(MISSING_KEY_MESSAGE)
+    kwargs = {"reasoning_effort": settings.reasoning_effort} if _is_reasoning(model) else {"temperature": temperature}
+    return ChatOpenAI(
+        model=model,
+        api_key=settings.openai_api_key,
+        max_retries=5,
+        default_headers={"Accept-Encoding": "identity"},
+        callbacks=[CostCallbackHandler(model)],
+        **kwargs,
+    )

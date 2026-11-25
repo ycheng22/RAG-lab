@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "The LCEL RAG chain, stage by stage",
+    "output": "diagrams/lcel_chain.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": { "mode": "hidden" }
+  },
+  "lanes": [
+    { "id": "ctx", "label": "\"context\" branch" },
+    { "id": "main", "label": "Chain (each | passes output to input)" }
+  ],
+  "nodes": [
+    { "id": "retriever", "lane": "ctx", "col": 1, "type": "database", "label": "retriever", "sublabel": "question → 4 Documents" },
+    { "id": "format", "lane": "ctx", "col": 2, "type": "backend", "label": "format_docs", "sublabel": "Documents → numbered text" },
+    { "id": "question", "lane": "main", "col": 0, "type": "external", "label": "question", "sublabel": "str" },
+    { "id": "pass", "lane": "main", "col": 1, "type": "backend", "label": "RunnablePassthrough", "sublabel": "\"question\" unchanged" },
+    { "id": "prompt", "lane": "main", "col": 3, "type": "backend", "label": "prompt", "sublabel": "fills {context} {question}" },
+    { "id": "llm", "lane": "main", "col": 4, "type": "cloud", "label": "llm", "sublabel": "ChatOpenAI" },
+    { "id": "parser", "lane": "main", "col": 5, "type": "frontend", "label": "StrOutputParser", "sublabel": "message → str" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "question", "to": "retriever", "label": "dict step runs both" },
+    { "id": "e2", "from": "question", "to": "pass" },
+    { "id": "e3", "from": "retriever", "to": "format" },
+    { "id": "e4", "from": "format", "to": "prompt", "variant": "emphasis" },
+    { "id": "e5", "from": "pass", "to": "prompt" },
+    { "id": "e6", "from": "prompt", "to": "llm" },
+    { "id": "e7", "from": "llm", "to": "parser", "variant": "emphasis" }
+  ]
+}

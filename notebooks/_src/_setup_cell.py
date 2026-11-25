@@ -41,6 +41,6 @@ from raglab.config import get_settings
 
 settings = get_settings()
 if settings.openai_api_key:
-    print(f"Project: {ROOT}\nChat model: {settings.chat_model} | embeddings: {settings.embed_model}")
+    print(f"Project: {ROOT.name if ROOT else '?'} | chat model: {settings.chat_model} | embeddings: {settings.embed_model}")
 else:
     print("No OPENAI_API_KEY found. Copy .env.example to .env and paste your key, then restart the kernel.")

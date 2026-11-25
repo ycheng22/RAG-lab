@@ -74,3 +74,36 @@ def load_corpus(include: set[str] | None = None) -> list[Document]:
         if loader:
             docs.extend(loader(path))
     return docs
+
+
+# ── LangChain loaders (added in notebook 04) ─────────────────────────────────
+
+
+def load_corpus_lc(include: set[str] | None = None) -> list[Document]:
+    """Same job as `load_corpus`, using LangChain's document loaders. Every Document gets the same
+    `source_file` metadata; HTML documents also keep `raw_html` for the HTML header splitter."""
+    from langchain_community.document_loaders import BSHTMLLoader, CSVLoader, PyPDFLoader, TextLoader
+
+    corpus = get_settings().corpus_dir
+    docs: list[Document] = []
+    for path in sorted(corpus.iterdir()):
+        if include is not None and path.name not in include:
+            continue
+        suffix = path.suffix.lower()
+        if suffix == ".pdf":
+            loaded = PyPDFLoader(str(path)).load()
+        elif suffix == ".md":
+            loaded = TextLoader(str(path), encoding="utf-8").load()
+        elif suffix == ".html":
+            loaded = BSHTMLLoader(str(path), open_encoding="utf-8", get_text_separator="\n").load()
+            for d in loaded:
+                d.metadata["raw_html"] = path.read_text(encoding="utf-8")
+        elif suffix == ".csv":
+            loaded = CSVLoader(str(path), encoding="utf-8").load()
+        else:
+            continue
+        for d in loaded:
+            d.metadata.pop("source", None)  # absolute local path; source_file is enough
+            d.metadata["source_file"] = path.name
+        docs.extend(loaded)
+    return docs

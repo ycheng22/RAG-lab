@@ -180,3 +180,47 @@ def add_context_prefix(docs: list[Document]) -> list[Document]:
         text = f"{hotel} — {doc.metadata.get('doc_type', '')}\n\n{doc.page_content}" if hotel else doc.page_content
         out.append(Document(page_content=text, metadata=dict(doc.metadata)))
     return out
+
+
+# ── LangChain splitters (added in notebook 04) ───────────────────────────────
+
+
+def chunk_corpus_lc(
+    docs: list[Document], size: int = 800, overlap: int = 150, context_prefix: bool = True
+) -> list[Document]:
+    """Chunk with LangChain's splitters, choosing one per file type:
+    - Markdown: MarkdownHeaderTextSplitter (## → section, ### → subsection), then recursive for long sections
+    - HTML: HTMLHeaderTextSplitter on the raw HTML (h1 → page_title, h2 → section)
+    - PDF and CSV: RecursiveCharacterTextSplitter
+    Then enrich metadata and (optionally) add the context prefix."""
+    from langchain_text_splitters import (
+        HTMLHeaderTextSplitter,
+        MarkdownHeaderTextSplitter,
+        RecursiveCharacterTextSplitter,
+    )
+
+    recursive = RecursiveCharacterTextSplitter(chunk_size=size, chunk_overlap=overlap, separators=DEFAULT_SEPARATORS)
+    markdown = MarkdownHeaderTextSplitter(
+        headers_to_split_on=[("##", "section"), ("###", "subsection")], strip_headers=False
+    )
+    html = HTMLHeaderTextSplitter(headers_to_split_on=[("h1", "page_title"), ("h2", "section")])
+
+    chunks: list[Document] = []
+    for doc in docs:
+        name = doc.metadata.get("source_file", "")
+        base = {k: v for k, v in doc.metadata.items() if not k.startswith("raw_")}
+        if name.endswith(".md"):
+            for part in markdown.split_text(doc.page_content):
+                part.metadata = {**base, **part.metadata}
+                chunks.extend(recursive.split_documents([part]))
+        elif name.endswith(".html"):
+            for part in html.split_text(doc.metadata.get("raw_html", doc.page_content)):
+                text = part.page_content.strip()
+                headers = {str(v) for v in part.metadata.values()}
+                if text and text not in headers:  # drop empty and header-only pieces
+                    part.metadata = {**base, **part.metadata}
+                    chunks.extend(recursive.split_documents([part]))
+        else:
+            chunks.extend(recursive.split_documents([Document(page_content=doc.page_content, metadata=base)]))
+    chunks = enrich_metadata(chunks)
+    return add_context_prefix(chunks) if context_prefix else chunks

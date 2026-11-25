@@ -128,3 +128,50 @@ def query_mmr(
         selected.append(best)
         candidates.remove(best)
     return [Document(page_content=texts[i], metadata=metas[i] or {}) for i in selected]
+
+
+# ── LangChain vector store (added in notebook 04) ────────────────────────────
+
+
+def create_lc_store(
+    chunks: list[Document],
+    collection_name: str,
+    *,
+    path: Path | None = None,
+    reset: bool = True,
+    collection_metadata: dict | None = None,
+):
+    """Build a LangChain `Chroma` store from chunks (cosine distance, deterministic ids)."""
+    from langchain_chroma import Chroma
+
+    client = get_client(path)
+    if reset:
+        try:
+            client.delete_collection(collection_name)
+        except Exception:
+            pass
+    store = Chroma(
+        collection_name=collection_name,
+        embedding_function=llm.CachedEmbeddings(),
+        client=client,
+        collection_metadata=collection_metadata or None,
+        collection_configuration={"hnsw": {"space": "cosine"}},
+    )
+    unique = {chunk_id(d): d for d in chunks}
+    ids = list(unique)
+    docs = [Document(page_content=d.page_content, metadata=clean_metadata(d.metadata)) for d in unique.values()]
+    for i in range(0, len(docs), ADD_BATCH):
+        store.add_documents(docs[i : i + ADD_BATCH], ids=ids[i : i + ADD_BATCH])
+    return store
+
+
+def load_lc_store(collection_name: str, *, path: Path | None = None):
+    """Open an existing collection as a LangChain `Chroma` store."""
+    from langchain_chroma import Chroma
+
+    return Chroma(
+        collection_name=collection_name,
+        embedding_function=llm.CachedEmbeddings(),
+        client=get_client(path),
+        create_collection_if_not_exists=False,
+    )
