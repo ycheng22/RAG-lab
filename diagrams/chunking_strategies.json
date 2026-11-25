@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Three ways to chunk the same document",
+    "output": "diagrams/chunking_strategies.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": { "mode": "hidden" }
+  },
+  "lanes": [
+    { "id": "fixed", "label": "Fixed size" },
+    { "id": "recursive", "label": "Recursive" },
+    { "id": "headers", "label": "Header-aware" }
+  ],
+  "nodes": [
+    { "id": "f_in", "lane": "fixed", "col": 0, "type": "external", "label": "Any text" },
+    { "id": "f_rule", "lane": "fixed", "col": 1, "type": "backend", "label": "Cut every N chars", "sublabel": "ignores words" },
+    { "id": "f_out", "lane": "fixed", "col": 2, "type": "security", "label": "Even sizes", "sublabel": "may split mid-word" },
+    { "id": "r_in", "lane": "recursive", "col": 0, "type": "external", "label": "Any text" },
+    { "id": "r_rule", "lane": "recursive", "col": 1, "type": "backend", "label": "Try ¶ → line → . → space", "sublabel": "biggest boundary first" },
+    { "id": "r_out", "lane": "recursive", "col": 2, "type": "frontend", "label": "Whole sentences", "sublabel": "≤ N chars + overlap" },
+    { "id": "h_in", "lane": "headers", "col": 0, "type": "external", "label": "Markdown / HTML" },
+    { "id": "h_rule", "lane": "headers", "col": 1, "type": "backend", "label": "Split at ## / ###", "sublabel": "or <h1> / <h2>" },
+    { "id": "h_out", "lane": "headers", "col": 2, "type": "frontend", "label": "One section each", "sublabel": "header kept as metadata" }
+  ],
+  "edges": [
+    { "id": "f1", "from": "f_in", "to": "f_rule" },
+    { "id": "f2", "from": "f_rule", "to": "f_out" },
+    { "id": "r1", "from": "r_in", "to": "r_rule" },
+    { "id": "r2", "from": "r_rule", "to": "r_out", "variant": "emphasis" },
+    { "id": "h1", "from": "h_in", "to": "h_rule" },
+    { "id": "h2", "from": "h_rule", "to": "h_out", "variant": "emphasis" }
+  ]
+}
