@@ -108,7 +108,11 @@ show_hits(store_chroma.query(collection, "swimming pool", k=3, where=cheap_with_
 # %% [markdown]
 # A filter is only as good as the metadata behind it. Chunks that `enrich_metadata` couldn't assign
 # to a single hotel (for example a PDF chunk spanning two hotels) have no `continent` or
-# `has_pool`, so a filter silently excludes them.
+# `has_pool`, so a filter silently excludes them. Worse, a chunk that begins with the end of one
+# hotel's section and then names the next hotel gets the **next** hotel's label: in the baseline
+# index of notebook 04, a chunk labelled Token Queenstown starts with Token Vancouver's facts
+# (210 rooms, rates from $310). Wrong metadata is more dangerous than missing metadata, because a
+# filter (or a context prefix) then states it as fact.
 
 # %% [markdown]
 # ## 4. Persistence

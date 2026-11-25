@@ -78,7 +78,8 @@ kernel) or run `uv run --with jupyterlab jupyter lab`.
 - **Embeddings are cached on disk** (`.cache/`), so re-running a notebook doesn't re-embed anything.
 - **Your key stays local.** `.env` is git-ignored; never commit it.
 - **The service is the one place real money can leak**: an open `/ask` endpoint spends your OpenAI
-  budget. That's why it requires an API key and rate-limits each key. Read the cost section of
+  budget. That's why it requires an API key and rate-limits each key. A leaked key can still spend
+  up to the rate limit, so also set a monthly usage limit in your OpenAI account. Read the cost section of
   [`service/README.md`](service/README.md) before deploying.
 
 ## The service

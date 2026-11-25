@@ -58,7 +58,7 @@ def create_collection(
         except Exception:  # the collection didn't exist yet
             pass
     collection = client.get_or_create_collection(
-        name, metadata=metadata or None, configuration={"hnsw": {"space": "cosine"}}
+        name, configuration={"hnsw": {"space": "cosine"}}
     )
     unique = {chunk_id(d): d for d in docs}  # identical chunks are stored once
     ids, chunks = list(unique), list(unique.values())
@@ -70,6 +70,8 @@ def create_collection(
             documents=[d.page_content for d in chunks[i : i + ADD_BATCH]],
             metadatas=[clean_metadata(d.metadata) or None for d in chunks[i : i + ADD_BATCH]],
         )
+    if metadata:  # written last: a build that failed halfway never looks complete
+        collection.modify(metadata=metadata)
     return collection
 
 
@@ -154,7 +156,6 @@ def create_lc_store(
         collection_name=collection_name,
         embedding_function=llm.CachedEmbeddings(),
         client=client,
-        collection_metadata=collection_metadata or None,
         collection_configuration={"hnsw": {"space": "cosine"}},
     )
     unique = {chunk_id(d): d for d in chunks}
@@ -162,6 +163,8 @@ def create_lc_store(
     docs = [Document(page_content=d.page_content, metadata=clean_metadata(d.metadata)) for d in unique.values()]
     for i in range(0, len(docs), ADD_BATCH):
         store.add_documents(docs[i : i + ADD_BATCH], ids=ids[i : i + ADD_BATCH])
+    if collection_metadata:  # written last: a build that failed halfway never looks complete
+        store._collection.modify(metadata=collection_metadata)
     return store
 
 

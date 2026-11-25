@@ -9,6 +9,7 @@ speak the same type.
 from __future__ import annotations
 
 import csv
+import warnings
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -79,32 +80,49 @@ def load_corpus(include: set[str] | None = None) -> list[Document]:
 # ── LangChain loaders (added in notebook 04) ─────────────────────────────────
 
 
-def load_corpus_lc(include: set[str] | None = None, *, corpus_dir: Path | None = None) -> list[Document]:
+def load_corpus_lc(
+    include: set[str] | None = None, *, corpus_dir: Path | None = None, skip_errors: bool = False
+) -> list[Document]:
     """Same job as `load_corpus`, using LangChain's document loaders. Every Document gets the same
     `source_file` metadata; HTML documents also keep `raw_html` for the HTML header splitter.
-    `corpus_dir` (added in notebook 09) reads another folder instead of data/corpus."""
-    from langchain_community.document_loaders import BSHTMLLoader, CSVLoader, PyPDFLoader, TextLoader
-
+    `corpus_dir` (added in notebook 09) reads another folder instead of data/corpus.
+    `skip_errors` (added in notebook 11) skips files that fail to load (wrong encoding, broken PDF)
+    with a warning instead of raising: one bad file must not break a whole service."""
     corpus = Path(corpus_dir) if corpus_dir else get_settings().corpus_dir
     docs: list[Document] = []
     for path in sorted(corpus.iterdir()):
         if include is not None and path.name not in include:
             continue
-        suffix = path.suffix.lower()
-        if suffix == ".pdf":
-            loaded = PyPDFLoader(str(path)).load()
-        elif suffix == ".md":
-            loaded = TextLoader(str(path), encoding="utf-8").load()
-        elif suffix == ".html":
-            loaded = BSHTMLLoader(str(path), open_encoding="utf-8", get_text_separator="\n").load()
-            for d in loaded:
-                d.metadata["raw_html"] = path.read_text(encoding="utf-8")
-        elif suffix == ".csv":
-            loaded = CSVLoader(str(path), encoding="utf-8").load()
-        else:
+        try:
+            loaded = _load_one_lc(path)
+        except Exception as err:
+            if not skip_errors:
+                raise
+            warnings.warn(f"skipped {path.name}: {type(err).__name__}: {err}", stacklevel=2)
+            continue
+        if loaded is None:
             continue
         for d in loaded:
             d.metadata.pop("source", None)  # absolute local path; source_file is enough
             d.metadata["source_file"] = path.name
         docs.extend(loaded)
     return docs
+
+
+def _load_one_lc(path: Path) -> list[Document] | None:
+    """One file with the matching LangChain loader; None for file types we don't index."""
+    from langchain_community.document_loaders import BSHTMLLoader, CSVLoader, PyPDFLoader, TextLoader
+
+    suffix = path.suffix.lower()
+    if suffix == ".pdf":
+        return PyPDFLoader(str(path)).load()
+    if suffix == ".md":
+        return TextLoader(str(path), encoding="utf-8").load()
+    if suffix == ".html":
+        loaded = BSHTMLLoader(str(path), open_encoding="utf-8", get_text_separator=chr(10)).load()
+        for d in loaded:
+            d.metadata["raw_html"] = path.read_text(encoding="utf-8")
+        return loaded
+    if suffix == ".csv":
+        return CSVLoader(str(path), encoding="utf-8").load()
+    return None

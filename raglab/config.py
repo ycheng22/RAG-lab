@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     database_url: str | None = Field(None, validation_alias=AliasChoices("DATABASE_URL"))
     full_run: bool = Field(False, validation_alias=AliasChoices("RAGLAB_FULL_RUN"))
     service_api_key: str | None = Field(None, validation_alias=AliasChoices("RAGLAB_SERVICE_API_KEY"))
+    admin_api_key: str | None = Field(None, validation_alias=AliasChoices("RAGLAB_ADMIN_API_KEY"))
     repo_url: str | None = Field(None, validation_alias=AliasChoices("RAGLAB_REPO_URL"))
     notebook_budget_usd: float = Field(0.05, validation_alias=AliasChoices("RAGLAB_NOTEBOOK_BUDGET_USD"))
 

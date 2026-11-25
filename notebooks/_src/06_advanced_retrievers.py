@@ -190,7 +190,8 @@ pd.DataFrame({m: {"accuracy": df["correct"].mean(), "questions": len(df)} for m,
 # - **SelfQuery** scored *worst* (hit rate 0.47, accuracy 54%), and found **none** of the evidence for
 #   the metadata-filter questions it was meant to help.
 #   Two reasons, both visible in section 3: the evidence for those questions sits in PDF profile
-#   chunks that span two hotels and so carry **no** hotel metadata (the filter excludes them), and
+#   chunks that span two hotels and so carry **no** hotel metadata (the filter excludes them) or
+#   the *wrong* hotel's label (notebook 03 shows one), and
 #   the generated search text is often empty (`' '`), so results within the filter come back in
 #   arbitrary order: rate rows instead of profiles.
 #

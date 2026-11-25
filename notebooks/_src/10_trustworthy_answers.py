@@ -169,7 +169,10 @@ print("SAFE prompt: ", safe.answer, f"(found={safe.found})")
 # basic prompt depends entirely on the model's training, and subtler injections (fake policy text,
 # "updated pricing") get through far more often than this one. The safe prompt adds three things:
 # documents are tagged as data, the prompt says instructions inside them must be ignored, and the
-# answer must cite a verifiable quote, which an injected claim can't survive.
+# answer must cite a quote that really exists. Be clear about what that last check proves: that the
+# quote is **in the documents**, not that it is true or official. A fooled model could quote the
+# planted review line word for word and pass verification, which is why the injection has to be
+# stopped earlier too.
 #
 # ### Screen at ingest time too
 #
@@ -178,10 +181,16 @@ print("SAFE prompt: ", safe.answer, f"(found={safe.found})")
 # for a human to review.
 
 # %%
-settings = get_settings()
-for path in sorted(settings.corpus_dir.iterdir()):
-    hits = answering.screen_injection(path.read_text(encoding="utf-8", errors="ignore"))
-    print(f"{path.name:32} {hits if hits else 'clean'}")
+from raglab import loaders
+
+# Screen the extracted text, not the raw file: a PDF's text is compressed inside the file.
+texts = {}
+for d in loaders.load_corpus_lc():
+    name = d.metadata["source_file"]
+    texts[name] = texts.get(name, "") + "\n" + d.page_content
+for name, text in sorted(texts.items()):
+    hits = answering.screen_injection(text)
+    print(f"{name:32} {hits if hits else 'clean'}")
 
 # %% [markdown]
 # A regex list is easy to evade (another language, a paraphrase), which is exactly why it's only

@@ -49,6 +49,30 @@ def client() -> OpenAI:
     return OpenAI(api_key=key, max_retries=5, default_headers={"Accept-Encoding": "identity"})
 
 
+def check_key() -> str | None:
+    """One free API call (listing models) to check that the key works. Returns None when it does,
+    otherwise one friendly sentence saying what's wrong. Never raises."""
+    import openai
+
+    try:
+        client().with_options(max_retries=0, timeout=15).models.list()
+        return None
+    except RuntimeError as err:  # missing key
+        return str(err)
+    except openai.AuthenticationError:
+        return "OpenAI rejected your API key (invalid or revoked). Fix OPENAI_API_KEY in .env, then restart the kernel."
+    except openai.PermissionDeniedError:
+        return "Your OpenAI key has no access to this project or model. Check the key's permissions, then restart the kernel."
+    except openai.RateLimitError as err:
+        if "insufficient_quota" in str(err):
+            return "Your OpenAI account has no credit left (insufficient_quota). Add credit in the OpenAI billing settings, then restart the kernel."
+        return "OpenAI is rate-limiting this key right now. Wait a minute and re-run this cell."
+    except openai.APIConnectionError:
+        return "Could not reach the OpenAI API. Check your internet connection or proxy, then re-run this cell."
+    except Exception:  # anything else: don't block the notebook on the check itself
+        return None
+
+
 # ── cost tracking ────────────────────────────────────────────────────────────
 
 

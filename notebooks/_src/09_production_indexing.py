@@ -147,8 +147,9 @@ for d in dropped:
 # its similarity is below 0.97. Near-duplicate thresholds are a judgement call: too low, and you merge
 # chunks that differ in an important detail (a price, a date). **Look at what you drop.**
 #
-# In a real pipeline you'd run `dedupe` inside the chunker passed to `sync_index`, so duplicates
-# never reach the index.
+# In a real pipeline you'd run `dedupe` over the **whole** corpus's chunks before indexing.
+# (Not inside the chunker passed to `sync_index`: that chunker sees one file at a time, so it could
+# never notice that the reprint repeats another file.)
 #
 # ## 5. Versions: only the current policy should answer
 #

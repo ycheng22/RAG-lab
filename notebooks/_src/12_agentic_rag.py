@@ -137,7 +137,10 @@ if HAS_LANGGRAPH:
 
 # %% [markdown]
 # Read the paths. The graph routes the arithmetic straight to an answer and the price question to
-# the rate table, and it refuses the unanswerable question after one rewrite. But the multi-hop
+# the rate table, and it refuses the unanswerable question after one rewrite. Agent runs vary: in
+# some runs (including, at times, the one saved here) the graph refuses even the price question
+# after reading the rate table, because its generate and self-check steps are told to refuse
+# whenever they're unsure. Run the cell twice and compare. But the multi-hop
 # question shows the price of a fixed graph: it only has `search_docs` and `lookup_rates`, so
 # "the cheapest hotel" has to be found by searching, and the rewrite may or may not get there.
 # The tool loop simply called `list_hotels` first. **Explicit control flow is easier to test and

@@ -60,6 +60,29 @@ class RateLimiter:
 limiter = RateLimiter()
 
 
+def require_admin_key(x_api_key: str | None = Header(default=None)) -> str:
+    """FastAPI dependency for endpoints that change the knowledge base (/ingest).
+
+    They need a SEPARATE admin key (RAGLAB_ADMIN_API_KEY): a client that may ask questions must
+    not be able to rewrite the documents the answers come from. Without an admin key the endpoint
+    is disabled (403), which is the safe default for a public deployment. Dev mode allows it."""
+    admin = get_settings().admin_api_key
+    if not admin:
+        if dev_mode():
+            key = "dev-admin"
+        else:
+            raise HTTPException(status_code=403, detail="Ingest is disabled: set RAGLAB_ADMIN_API_KEY to enable it")
+    elif not x_api_key or not hmac.compare_digest(x_api_key.encode(), admin.encode()):
+        raise HTTPException(status_code=401, detail="Missing or invalid admin X-API-Key header")
+    else:
+        key = x_api_key
+    allowed, retry_after = limiter.allow(key)
+    if not allowed:
+        raise HTTPException(status_code=429, detail=f"Rate limit: {RATE_LIMIT} requests per minute",
+                            headers={"Retry-After": str(retry_after)})
+    return key
+
+
 def require_api_key(x_api_key: str | None = Header(default=None)) -> str:
     """FastAPI dependency: 401 without a valid key, 429 when the key is over its limit."""
     expected = get_settings().service_api_key

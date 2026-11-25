@@ -93,9 +93,11 @@ def build_chunks(profile: str | IndexProfile) -> list[Document]:
     return chunking.add_context_prefix(chunks) if p.context_prefix else chunks
 
 
-def _needs_build(collection_meta: dict | None, fingerprint: str) -> str | None:
+def _needs_build(collection_meta: dict | None, fingerprint: str, count: int | None = None) -> str | None:
     if collection_meta is None:
         return "building index"
+    if "fingerprint" not in collection_meta or count == 0:
+        return "rebuilding (the previous build did not finish)"
     if collection_meta.get("fingerprint") != fingerprint:
         return "rebuilding (corpus changed)"
     return None
@@ -113,7 +115,8 @@ def ensure_raw_collection(profile: str = "nb03_raw"):
         meta = existing.metadata or {}
     except Exception:
         existing, meta = None, None
-    reason = _needs_build(meta if existing is not None else None, fingerprint)
+    count = existing.count() if existing is not None else None
+    reason = _needs_build(meta if existing is not None else None, fingerprint, count)
     if reason is None:
         print(f"[{p.name}] reusing index ({existing.count()} chunks)")
         return existing
@@ -140,10 +143,11 @@ def ensure_index(profile: str = "nb04_baseline"):
     fingerprint = corpus_fingerprint(p)
     client = store_chroma.get_client()
     try:
-        meta = client.get_collection(p.name).metadata or {}
+        collection = client.get_collection(p.name)
+        meta, count = collection.metadata or {}, collection.count()
     except Exception:
-        meta = None
-    reason = _needs_build(meta, fingerprint)
+        meta, count = None, None
+    reason = _needs_build(meta, fingerprint, count)
     if reason is None:
         store = store_chroma.load_lc_store(p.name)
         print(f"[{p.name}] reusing index ({store._collection.count()} chunks)")

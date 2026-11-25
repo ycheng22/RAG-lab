@@ -91,7 +91,7 @@ table.sort_values("score", ascending=False)
 # %% [markdown]
 # The Kyoto check-in passage wins clearly. Next come the Lisbon check-in passage (same *topic*,
 # different hotel) and the Kyoto restaurant passage (same *hotel*, different topic). Passages about
-# Wi-Fi, loyalty points or Singapore score lowest.
+# other hotels' surroundings, loyalty points or Singapore's tower score lowest.
 #
 # ## 5. Retrieve the top 3
 #

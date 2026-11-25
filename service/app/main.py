@@ -6,19 +6,24 @@ Endpoints:
     GET  /health   no auth  -> {"status": "ok", "store": "chroma", "chunks": 109}
     POST /ask      X-API-Key -> an Answer with citations (+ which citations verified),
                                or a text/event-stream of tokens when "stream": true
-    POST /ingest   X-API-Key -> upload a .md/.html/.pdf/.csv file; it is screened for prompt
-                               injection (warnings are returned, not blocked) and indexed
+    POST /ingest   admin key -> upload a .md/.html/.pdf/.csv file; it must parse, it is screened
+                               for prompt injection (warnings are returned, not blocked) and
+                               indexed. Disabled (403) unless RAGLAB_ADMIN_API_KEY is set.
 
 Configuration (environment or .env): OPENAI_API_KEY, RAGLAB_SERVICE_API_KEY (required unless
-RAGLAB_DEV=1), RAGLAB_STORE (chroma | pgvector), DATABASE_URL (pgvector), and optionally
-RAGLAB_SERVICE_CORPUS_DIR (default data/corpus) and RAGLAB_SERVICE_COLLECTION (default "token").
+RAGLAB_DEV=1), RAGLAB_ADMIN_API_KEY (enables /ingest), RAGLAB_STORE (chroma | pgvector),
+DATABASE_URL (pgvector), and optionally RAGLAB_SERVICE_CORPUS_DIR (default data/corpus) and
+RAGLAB_SERVICE_COLLECTION (default "token").
 """
 
 from __future__ import annotations
 
 import json
 import os
+import shutil
+import tempfile
 import threading
+import warnings
 from contextlib import asynccontextmanager
 from dataclasses import asdict
 from pathlib import Path
@@ -30,7 +35,7 @@ from pydantic import BaseModel, Field
 from raglab import answering, bootstrap, indexing, loaders
 from raglab.config import get_settings
 from raglab.store_pg import get_store
-from service.app.auth import check_startup_config, require_api_key
+from service.app.auth import check_startup_config, require_admin_key, require_api_key
 from service.app.logging_mw import JsonLogMiddleware, log_json
 
 ALLOWED_SUFFIXES = {".md", ".html", ".pdf", ".csv"}
@@ -59,11 +64,23 @@ class Service:
         self.manifest = settings.cache_dir / f"service_manifest_{self.kind}_{self.collection}.json"
         self.store = get_store(self.kind, self.collection)
         self.sync_lock = threading.Lock()  # one sync at a time
+        if self.kind == "pgvector" and not self.manifest.exists():
+            # The manifest lives on local disk, which Cloud Run wipes at every cold start. Without
+            # it, sync_index can't know what's already in Postgres (old chunks, stale is_latest
+            # tags), so start the collection over from the corpus this service ships with.
+            log_json(event="pgvector_reset", reason="no local manifest", collection=self.collection)
+            self.store.delete_collection()
+            self.store.create_collection()
 
     def sync(self) -> indexing.SyncReport:
         with self.sync_lock:
-            docs = indexing.tag_versions(loaders.load_corpus_lc(corpus_dir=self.corpus_dir))
-            return indexing.sync_index(self.store, docs, self.manifest, chunker=CHUNKER)
+            with warnings.catch_warnings(record=True) as caught:
+                warnings.simplefilter("always")
+                docs = loaders.load_corpus_lc(corpus_dir=self.corpus_dir, skip_errors=True)
+            for w in caught:  # a broken file is skipped and logged, never fatal
+                if "skipped" in str(w.message):
+                    log_json(event="file_skipped", detail=str(w.message))
+            return indexing.sync_index(self.store, indexing.tag_versions(docs), self.manifest, chunker=CHUNKER)
 
     def chunk_count(self) -> int:
         if not self.manifest.exists():
@@ -109,7 +126,7 @@ def ask(req: AskRequest, _key: str = Depends(require_api_key)):
 
 
 @app.post("/ingest")
-def ingest(file: UploadFile = File(...), _key: str = Depends(require_api_key)) -> dict:
+def ingest(file: UploadFile = File(...), _key: str = Depends(require_admin_key)) -> dict:
     name = Path(file.filename or "").name  # never trust a client path
     if Path(name).suffix.lower() not in ALLOWED_SUFFIXES:
         raise HTTPException(status_code=415, detail=f"Unsupported file type. Allowed: {sorted(ALLOWED_SUFFIXES)}")
@@ -117,9 +134,19 @@ def ingest(file: UploadFile = File(...), _key: str = Depends(require_api_key)) -
     if len(content) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="File too large (max 5 MB)")
 
-    service.corpus_dir.mkdir(parents=True, exist_ok=True)
-    (service.corpus_dir / name).write_bytes(content)
-    text = "\n".join(d.page_content for d in loaders.load_corpus_lc({name}, corpus_dir=service.corpus_dir))
-    warnings = answering.screen_injection(text)
+    # Parse it in a scratch folder first: a file that can't be read never reaches the corpus.
+    with tempfile.TemporaryDirectory() as scratch:
+        staged = Path(scratch) / name
+        staged.write_bytes(content)
+        try:
+            docs = loaders.load_corpus_lc({name}, corpus_dir=Path(scratch))
+        except Exception as err:
+            raise HTTPException(status_code=422, detail=f"Could not read {name}: {type(err).__name__}") from None
+        text = "\n".join(d.page_content for d in docs)
+        if not text.strip():
+            raise HTTPException(status_code=422, detail=f"{name} contains no text")
+        service.corpus_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(staged, service.corpus_dir / name)
+    found = answering.screen_injection(text)
     report = service.sync()
-    return {"file": name, "report": asdict(report), "warnings": warnings}
+    return {"file": name, "report": asdict(report), "warnings": found}
