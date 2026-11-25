@@ -1,0 +1,145 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "RAG in two stages: index once, then answer every question",
+    "output": "diagrams/rag_overview.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "lanes": [
+    {
+      "id": "index",
+      "label": "Indexing (once, offline)"
+    },
+    {
+      "id": "query",
+      "label": "Querying (every question)"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "docs",
+      "lane": "index",
+      "col": 0,
+      "type": "external",
+      "label": "Documents",
+      "sublabel": "PDF, Markdown, HTML"
+    },
+    {
+      "id": "load",
+      "lane": "index",
+      "col": 1,
+      "type": "backend",
+      "label": "Load",
+      "sublabel": "text + metadata"
+    },
+    {
+      "id": "chunk",
+      "lane": "index",
+      "col": 2,
+      "type": "backend",
+      "label": "Chunk",
+      "sublabel": "small pieces"
+    },
+    {
+      "id": "embed_docs",
+      "lane": "index",
+      "col": 3,
+      "type": "cloud",
+      "label": "Embed",
+      "sublabel": "text → vector"
+    },
+    {
+      "id": "store",
+      "lane": "index",
+      "col": 4,
+      "type": "database",
+      "label": "Vector store",
+      "sublabel": "vectors + text"
+    },
+    {
+      "id": "question",
+      "lane": "query",
+      "col": 2,
+      "type": "external",
+      "label": "Question",
+      "sublabel": "from a user"
+    },
+    {
+      "id": "embed_q",
+      "lane": "query",
+      "col": 3,
+      "type": "cloud",
+      "label": "Embed",
+      "sublabel": "same model"
+    },
+    {
+      "id": "retrieve",
+      "lane": "query",
+      "col": 4,
+      "type": "backend",
+      "label": "Retrieve",
+      "sublabel": "top-k similar chunks"
+    },
+    {
+      "id": "generate",
+      "lane": "query",
+      "col": 5,
+      "type": "cloud",
+      "label": "LLM answers",
+      "sublabel": "prompt = question + chunks"
+    }
+  ],
+  "edges": [
+    {
+      "id": "i1",
+      "from": "docs",
+      "to": "load"
+    },
+    {
+      "id": "i2",
+      "from": "load",
+      "to": "chunk"
+    },
+    {
+      "id": "i3",
+      "from": "chunk",
+      "to": "embed_docs"
+    },
+    {
+      "id": "i4",
+      "from": "embed_docs",
+      "to": "store",
+      "label": "save"
+    },
+    {
+      "id": "q1",
+      "from": "question",
+      "to": "embed_q"
+    },
+    {
+      "id": "q2",
+      "from": "embed_q",
+      "to": "retrieve",
+      "label": "query vector"
+    },
+    {
+      "id": "s1",
+      "from": "store",
+      "to": "retrieve",
+      "label": "nearest",
+      "variant": "emphasis"
+    },
+    {
+      "id": "q3",
+      "from": "retrieve",
+      "to": "generate",
+      "label": "augment",
+      "variant": "emphasis"
+    }
+  ]
+}

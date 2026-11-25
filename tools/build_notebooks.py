@@ -26,10 +26,18 @@ OUT = ROOT / "notebooks"
 
 KERNELSPEC = {"display_name": "Python 3 (raglab)", "language": "python", "name": "python3"}
 
+# A code cell containing only this marker is replaced by the shared setup cell (_setup_cell.py),
+# so every notebook carries an identical, self-contained copy.
+SETUP_MARKER = "# <<SETUP>>"
+SETUP_SOURCE = (SRC / "_setup_cell.py").read_text(encoding="utf-8").strip()
+
 
 def build(name: str, execute: bool, timeout: int) -> bool:
     src = SRC / f"{name}.py"
     nb = jupytext.read(src, fmt="py:percent")
+    for cell in nb.cells:
+        if cell.cell_type == "code" and cell.source.strip() == SETUP_MARKER:
+            cell.source = SETUP_SOURCE
     nb.metadata["kernelspec"] = KERNELSPEC
     nb.metadata["language_info"] = {"name": "python"}
     nb.metadata.pop("jupytext", None)
