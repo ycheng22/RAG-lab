@@ -1,0 +1,34 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Inside a vector store query",
+    "output": "diagrams/vector_search.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "legend": { "mode": "hidden" }
+  },
+  "lanes": [
+    { "id": "store", "label": "Collection (stored on disk)" },
+    { "id": "query", "label": "Query" }
+  ],
+  "nodes": [
+    { "id": "record", "lane": "store", "col": 0, "type": "database", "label": "Record", "sublabel": "id · vector · text · metadata" },
+    { "id": "hnsw", "lane": "store", "col": 2, "type": "database", "label": "HNSW index", "sublabel": "fast approximate search" },
+    { "id": "q", "lane": "query", "col": 0, "type": "external", "label": "Question" },
+    { "id": "embed", "lane": "query", "col": 1, "type": "cloud", "label": "Embed", "sublabel": "same model as chunks" },
+    { "id": "search", "lane": "query", "col": 2, "type": "backend", "label": "Nearest neighbours", "sublabel": "cosine distance" },
+    { "id": "filter", "lane": "query", "col": 3, "type": "security", "label": "where filter", "sublabel": "applied during search" },
+    { "id": "pick", "lane": "query", "col": 4, "type": "backend", "label": "Top-k or MMR", "sublabel": "relevant / diverse" },
+    { "id": "result", "lane": "query", "col": 5, "type": "frontend", "label": "Chunks", "sublabel": "+ distances" }
+  ],
+  "edges": [
+    { "id": "s1", "from": "record", "to": "hnsw", "label": "indexed" },
+    { "id": "s2", "from": "hnsw", "to": "search", "variant": "emphasis" },
+    { "id": "q1", "from": "q", "to": "embed" },
+    { "id": "q2", "from": "embed", "to": "search" },
+    { "id": "q3", "from": "search", "to": "filter" },
+    { "id": "q4", "from": "filter", "to": "pick" },
+    { "id": "q5", "from": "pick", "to": "result", "variant": "emphasis" }
+  ]
+}
